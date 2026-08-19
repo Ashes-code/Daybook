@@ -1,50 +1,77 @@
-# Welcome to your Expo app 👋
+# Daybook
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A phone journal / diary app built with **Expo (SDK 57)** and **React Native**.  
+Not a generic notes app — life is organized by **days**, with **multiple entries per day**, mood, titles, and search. Auth and cloud sync from day one (Supabase).
 
-## Get started
+## Product idea
 
-1. Install dependencies
+Open a day. Write. Flip through time like a paper diary.
 
-   ```bash
-   npm install
-   ```
+- **Days** are the spine (calendar + day list)
+- **Multiple entries per day** (morning, night, quick thoughts)
+- **Full diary feel**: title, mood, body text, search
+- **Account + cloud** so entries follow you across devices
 
-2. Start the app
+## Stack
 
-   ```bash
-   npx expo start
-   ```
+| Layer | Choice |
+| --- | --- |
+| Framework | Expo SDK 57 + Expo Router |
+| UI | React Native |
+| Language | TypeScript |
+| Local cache | AsyncStorage (+ SecureStore for secrets) |
+| Auth & DB | Supabase (email auth, Postgres, RLS) |
+| Client state | Zustand |
+| Dates | date-fns |
 
-In the output, you'll find options to open the app in a
+Docs for this exact SDK: [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Project docs
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+| File | Purpose |
+| --- | --- |
+| [PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTATION.md) | Vision, features, data model, milestones |
+| [AGENTS.md](./AGENTS.md) | Rules for AI agents working on this repo |
+| [CODEBASE_MAP.md](./CODEBASE_MAP.md) | What each folder/file is for + changelog of work done |
 
-## Get a fresh project
+## Prerequisites
 
-When you're ready, run:
+- Node.js **22.13+** (SDK 57 requirement)
+- npm
+- Expo Go on a phone, or Android emulator / iOS simulator
+
+## Setup
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Then press `a` (Android), `i` (iOS), `w` (web), or scan the QR code with Expo Go.
 
-## Learn more
+### Environment (later milestones)
 
-To learn more about developing your project with Expo, look at the following resources:
+Copy when we wire Supabase:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+# .env (do not commit secrets)
+EXPO_PUBLIC_SUPABASE_URL=
+EXPO_PUBLIC_SUPABASE_ANON_KEY=
+```
 
-## Join the community
+## Scripts
 
-Join our community of developers creating universal apps.
+| Command | What it does |
+| --- | --- |
+| `npm start` | Start Expo dev server |
+| `npm run android` | Start and open Android |
+| `npm run ios` | Start and open iOS |
+| `npm run web` | Start web |
+| `npm run lint` | ESLint via `expo lint` |
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Current status
+
+**Milestone 0 in progress** — Expo upgraded to SDK 57, core deps installed, project docs created.  
+App UI is still the Expo starter (tabs Home / About). Diary screens come next.
+
+See [PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTATION.md) for the full roadmap.
