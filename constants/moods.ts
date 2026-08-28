@@ -9,8 +9,8 @@ export const MOODS: { value: Mood; label: string; emoji: string }[] = [
 ];
 
 export const MOOD_COLORS: Record<Mood, string> = {
-  great: "#2ECC71",
-  good: "#27AE60",
+  great: "#F4C430",
+  good: "#2ECC71",
   okay: "#F39C12",
   low: "#E67E22",
   rough: "#E74C3C",

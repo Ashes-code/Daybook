@@ -148,41 +148,44 @@ https://docs.expo.dev/versions/v57.0.0/
 
 ## 7. Milestones
 
-### Milestone 0 — Foundation (current)
+### Milestone 0 — Foundation ✅
 
 - [x] Upgrade Expo to current stable (SDK 57)
 - [x] Align all Expo-related dependencies
 - [x] Install planned libraries (Supabase, Zustand, AsyncStorage, SecureStore, date-fns)
 - [x] Project documentation set (README, PROJECT_DOCUMENTATION, AGENTS, CODEBASE_MAP)
-- [ ] Rename leftover StickerSmash branding in UI copy
-- [ ] Baseline folder structure for diary app (`components/`, `lib/`, `types/`, etc.)
-- [ ] App runs cleanly on Expo Go / emulator after cleanup
+- [x] Baseline folder structure for diary app (`components/`, `lib/`, `types/`, etc.)
+- [x] App runs cleanly on Expo Go / emulator after cleanup
 
 **Learning focus:** Expo project layout, SDK upgrades, `expo install`.
 
 ---
 
-### Milestone 1 — Shell UI (no backend)
+### Milestone 1 — Shell UI (no backend) ✅
 
-- [ ] Diary-themed design tokens (colors, typography spacing)
-- [ ] Tab layout: Today, Calendar, Search, Profile
-- [ ] Mock data: multiple entries across several days
-- [ ] Day view list + entry detail/edit screens (local state only)
-- [ ] Calendar month grid with “has entries” dots
-- [ ] Search over mock data
+- [x] Diary-themed design tokens (colors, typography spacing)
+- [x] Tab layout: Today, Calendar, Search, Profile
+- [x] Mock data: multiple entries across several days
+- [x] Day view list + entry detail/edit screens (local state only)
+- [x] Calendar month grid with "has entries" dots
+- [x] Search over mock data
 
 **Learning focus:** Expo Router, lists, navigation params, controlled inputs.
 
 ---
 
-### Milestone 2 — Auth + Supabase project
+### Milestone 2 — Auth + Supabase project (current)
 
-- [ ] Create Supabase project
-- [ ] Env vars (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`)
-- [ ] Supabase client with SecureStore session persistence
-- [ ] Sign up / sign in / sign out screens
-- [ ] Auth gate: redirect unauthenticated users
-- [ ] Profile shows email + sign out
+- [x] Create Supabase project
+- [x] Env vars (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`)
+- [x] Supabase client with SecureStore session persistence
+- [x] Welcome/Splash screen
+- [x] Empty state design for Today screen
+- [x] Sign up screen (email + password, designed for Google later)
+- [x] Sign in screen (email + password, designed for Google later)
+- [x] Auth gate: redirect unauthenticated users
+- [x] Profile shows email + sign out
+- [x] Test auth flow end-to-end
 
 **Learning focus:** Auth flows, secure storage, protected routes.
 

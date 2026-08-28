@@ -11,6 +11,7 @@ export const Colors = {
     accentLight: "#D9CFC5",
     error: "#C0392B",
     separator: "#F0EBE4",
+    tabActive: "#A0522D",
   },
   dark: {
     background: "#1A1714",
@@ -22,6 +23,7 @@ export const Colors = {
     accentLight: "#3A3530",
     error: "#E74C3C",
     separator: "#2A2520",
+    tabActive: "#E8A87C",
   },
 };
 
