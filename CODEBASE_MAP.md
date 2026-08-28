@@ -48,6 +48,32 @@ Living map of the Daybook repository. **Update this file** when folders/files ga
 - Added Analytics, Favorites, About to Profile
 - Added calendar vertical scroll for desktop
 
+### 2026-08-28 — Pass 2B Complete (Entry Interactions)
+
+- Updated entry form to support edit mode (prefill with existing entry data)
+- Wired entry card taps in Today screen to open form in edit mode
+- Created day entries modal (`app/day/[date].tsx`) for Calendar
+- Day modal shows entries for selected day with add/edit capability
+- Empty day state shows "Write something" button
+- Wired calendar day taps to day entries modal
+- All interactions pass lint
+
+### 2026-08-28 — Profile Features (Analytics, Favorites, Themes, About)
+
+- Created Analytics screen with mockup data (entry counts, mood breakdown, streaks, habits)
+- Created Favorites screen to show favorited entries
+- Added context menu to EntryCard (long-press: edit, favorite, delete)
+- Added `favorited` field to Entry type
+- Updated theme system with 3 themes: Brown Paper (warm earthy), Dark (clean black/white), Light (bright with blue accents)
+- Created theme store (`stores/theme.ts`) with Zustand for theme persistence
+- Created entries store (`stores/entries.ts`) for managing entry state
+- Created Appearance screen to switch themes with live preview
+- Created About screen with app summary + version
+- Wired Profile buttons to all new screens
+- All screens use theme store for consistent theming
+- Updated all screens to use entries store instead of mock data directly
+- Lint passes clean
+
 ---
 
 ## Top-level files
@@ -76,14 +102,19 @@ File-based routing. The file tree **is** the navigation tree.
 
 | Path | Purpose | Status |
 | --- | --- | --- |
-| `app/_layout.tsx` | Root layout: Stack + StatusBar | M0 complete |
+| `app/_layout.tsx` | Root layout: Stack + StatusBar + theming | M0 complete |
 | `app/index.tsx` | Redirects to (tabs) | M0 complete |
 | `app/(tabs)/_layout.tsx` | Tab navigator layout | M1 complete |
-| `app/(tabs)/index.tsx` | Today screen | M1 complete |
-| `app/(tabs)/calendar.tsx` | Calendar screen | M1 complete |
-| `app/(tabs)/search.tsx` | Search screen | M1 complete |
-| `app/(tabs)/profile.tsx` | Profile screen | M1 complete |
-| `app/entry/new.tsx` | New entry modal | M1 complete |
+| `app/(tabs)/index.tsx` | Today screen | M1+2B complete |
+| `app/(tabs)/calendar.tsx` | Calendar screen | M1+2B complete |
+| `app/(tabs)/search.tsx` | Search screen | M1+2B complete |
+| `app/(tabs)/profile.tsx` | Profile screen | M1+2B complete |
+| `app/entry/new.tsx` | Entry form (create + edit) | M1+2B complete |
+| `app/day/[date].tsx` | Day entries modal | M1+2B complete |
+| `app/analytics/index.tsx` | Analytics with mockup data | Profile features |
+| `app/favorites/index.tsx` | Favorited entries list | Profile features |
+| `app/appearance/index.tsx` | Theme switcher (3 themes) | Profile features |
+| `app/about/index.tsx` | App summary + version | Profile features |
 
 ---
 
@@ -91,7 +122,7 @@ File-based routing. The file tree **is** the navigation tree.
 
 | Path | Purpose |
 | --- | --- |
-| `components/EntryCard.tsx` | Card showing entry title, mood, body preview |
+| `components/EntryCard.tsx` | Card with context menu (edit, favorite, delete) |
 | `components/DayHeader.tsx` | Date + entry count header |
 | `components/MoodBadge.tsx` | Visual mood indicator pill |
 | `components/index.ts` | Placeholder for future exports |
@@ -102,7 +133,7 @@ File-based routing. The file tree **is** the navigation tree.
 
 | Path | Purpose |
 | --- | --- |
-| `constants/theme.ts` | Colors (light/dark), Spacing, Typography |
+| `constants/theme.ts` | 3 themes (brownPaper, dark, light), Spacing, Typography |
 | `constants/moods.ts` | MOODS array + MOOD_COLORS mapping |
 
 ---
@@ -120,7 +151,7 @@ File-based routing. The file tree **is** the navigation tree.
 
 | Path | Purpose |
 | --- | --- |
-| `types/entry.ts` | Entry type + Mood union type |
+| `types/entry.ts` | Entry type (with favorited), Mood union, ThemeName union |
 
 ---
 
@@ -130,7 +161,15 @@ File-based routing. The file tree **is** the navigation tree.
 | --- | --- |
 | `hooks/` | Custom React hooks (useAuth, useEntries) |
 | `services/` | API/data access (auth.ts, entries.ts) |
-| `stores/` | Zustand state stores |
+
+---
+
+## `stores/` — Zustand state stores
+
+| Path | Purpose |
+| --- | --- |
+| `stores/theme.ts` | Theme selection (brownPaper, dark, light) |
+| `stores/entries.ts` | Entry state management (favorites, delete) |
 
 ---
 

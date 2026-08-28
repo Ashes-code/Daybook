@@ -1,12 +1,15 @@
-import { View, Text, Pressable, ScrollView, StyleSheet, useColorScheme } from "react-native";
+import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
+import { useThemeStore } from "../../stores/theme";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ProfileScreen() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
+  const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { themeName } = useThemeStore();
+  const theme = Colors[themeName];
 
   return (
     <ScrollView
@@ -45,6 +48,7 @@ export default function ProfileScreen() {
         </Text>
 
         <Pressable
+          onPress={() => router.push("/analytics")}
           style={({ pressed }) => [
             styles.settingsRow,
             { backgroundColor: theme.surface, borderColor: theme.border },
@@ -59,6 +63,7 @@ export default function ProfileScreen() {
         </Pressable>
 
         <Pressable
+          onPress={() => router.push("/favorites")}
           style={({ pressed }) => [
             styles.settingsRow,
             { backgroundColor: theme.surface, borderColor: theme.border },
@@ -79,13 +84,14 @@ export default function ProfileScreen() {
         </Text>
 
         <Pressable
+          onPress={() => router.push("/appearance")}
           style={({ pressed }) => [
             styles.settingsRow,
             { backgroundColor: theme.surface, borderColor: theme.border },
             pressed && { opacity: 0.7 },
           ]}
         >
-          <Ionicons name="moon-outline" size={20} color={theme.text} />
+          <Ionicons name="color-palette-outline" size={20} color={theme.text} />
           <Text style={[Typography.body, { color: theme.text, flex: 1 }]}>
             Appearance
           </Text>
@@ -93,37 +99,20 @@ export default function ProfileScreen() {
         </Pressable>
 
         <Pressable
+          onPress={() => router.push("/about")}
           style={({ pressed }) => [
             styles.settingsRow,
             { backgroundColor: theme.surface, borderColor: theme.border },
             pressed && { opacity: 0.7 },
           ]}
         >
-          <Ionicons name="notifications-outline" size={20} color={theme.text} />
-          <Text style={[Typography.body, { color: theme.text, flex: 1 }]}>
-            Notifications
-          </Text>
-          <Ionicons name="chevron-forward" size={16} color={theme.textSecondary} />
-        </Pressable>
-
-        <Pressable
-          style={({ pressed }) => [
-            styles.settingsRow,
-            { backgroundColor: theme.surface, borderColor: theme.border },
-            pressed && { opacity: 0.7 },
-          ]}
-        >
-          <Ionicons name="help-circle-outline" size={20} color={theme.text} />
+          <Ionicons name="information-circle-outline" size={20} color={theme.text} />
           <Text style={[Typography.body, { color: theme.text, flex: 1 }]}>
             About
           </Text>
           <Ionicons name="chevron-forward" size={16} color={theme.textSecondary} />
         </Pressable>
       </View>
-
-      <Text style={[Typography.bodySmall, { color: theme.textSecondary, textAlign: "center" }]}>
-        Daybook v1.0.0
-      </Text>
     </ScrollView>
   );
 }

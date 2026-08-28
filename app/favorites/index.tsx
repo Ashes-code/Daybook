@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
@@ -7,58 +7,40 @@ import { useEntriesStore } from "../../stores/entries";
 import { EntryCard } from "../../components/EntryCard";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function TodayScreen() {
+export default function FavoritesScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
-  const { entries, deleteEntry, toggleFavorite } = useEntriesStore();
+  const { entries, toggleFavorite, deleteEntry } = useEntriesStore();
 
-  const today = new Date().toISOString().split("T")[0];
-  const todayEntries = entries.filter((e) => e.entryDate === today);
+  const favorites = entries.filter((e) => e.favorited);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
-        <View>
-          <Text style={[Typography.heading, { color: theme.text }]}>
-            Today
-          </Text>
-          <Text style={[Typography.bodySmall, { color: theme.textSecondary }]}>
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </Text>
-        </View>
-
-        <Pressable
-          onPress={() => router.push("/entry/new")}
-          style={({ pressed }) => [
-            styles.addButton,
-            { backgroundColor: theme.accent },
-            pressed && { opacity: 0.7 },
-          ]}
-        >
-          <Ionicons name="add" size={24} color={theme.surface} />
+      <View style={[styles.header, { paddingTop: insets.top + Spacing.md, borderBottomColor: theme.border }]}>
+        <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color={theme.text} />
         </Pressable>
+        <Text style={[Typography.heading, { color: theme.text, flex: 1, textAlign: "center" }]}>
+          Favorites
+        </Text>
+        <View style={styles.backButton} />
       </View>
 
-      {todayEntries.length === 0 ? (
+      {favorites.length === 0 ? (
         <View style={styles.empty}>
-          <Ionicons
-            name="book-outline"
-            size={48}
-            color={theme.textSecondary}
-          />
+          <Ionicons name="heart-outline" size={48} color={theme.textSecondary} />
           <Text style={[Typography.body, { color: theme.textSecondary }]}>
-            No entries today. Start writing!
+            No favorite entries yet.
+          </Text>
+          <Text style={[Typography.bodySmall, { color: theme.textSecondary, textAlign: "center" }]}>
+            Long-press an entry and tap the heart icon to add it to your favorites.
           </Text>
         </View>
       ) : (
         <FlatList
-          data={todayEntries}
+          data={favorites}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
@@ -95,13 +77,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm + 4,
+    borderBottomWidth: 1,
   },
-  addButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: "center",
-    justifyContent: "center",
+  backButton: {
+    padding: Spacing.sm,
+    minWidth: 40,
   },
   list: {
     padding: Spacing.md,
@@ -112,5 +93,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.md,
+    paddingHorizontal: Spacing.xl,
   },
 });

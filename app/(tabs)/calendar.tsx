@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { View, Text, Pressable, ScrollView, StyleSheet, useColorScheme, Platform } from "react-native";
+import { View, Text, Pressable, ScrollView, StyleSheet, Platform } from "react-native";
+import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
-import { MOCK_ENTRIES } from "../../lib/mock";
+import { useThemeStore } from "../../stores/theme";
+import { useEntriesStore } from "../../stores/entries";
 import { Ionicons } from "@expo/vector-icons";
 
 const DAYS_IN_WEEK = 7;
@@ -17,9 +19,11 @@ function getFirstDayOfMonth(year: number, month: number) {
 }
 
 export default function CalendarScreen() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { themeName } = useThemeStore();
+  const theme = Colors[themeName];
+  const { entries } = useEntriesStore();
 
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
@@ -33,7 +37,7 @@ export default function CalendarScreen() {
     year: "numeric",
   });
 
-  const entriesByDate = MOCK_ENTRIES.reduce<Record<string, number>>((acc, e) => {
+  const entriesByDate = entries.reduce<Record<string, number>>((acc, e) => {
     acc[e.entryDate] = (acc[e.entryDate] || 0) + 1;
     return acc;
   }, {});
@@ -84,10 +88,12 @@ export default function CalendarScreen() {
 
           return (
             <View key={day} style={styles.dayCell}>
-              <View
-                style={[
+              <Pressable
+                onPress={() => router.push({ pathname: "/day/[date]", params: { date: dateStr } })}
+                style={({ pressed }) => [
                   styles.dayButton,
                   isToday && { backgroundColor: theme.accent + "20" },
+                  pressed && { opacity: 0.7 },
                 ]}
               >
                 <Text
@@ -102,7 +108,7 @@ export default function CalendarScreen() {
                   {day}
                 </Text>
                 {hasEntries && <View style={[styles.dot, { backgroundColor: theme.accent }]} />}
-              </View>
+              </Pressable>
             </View>
           );
         })}

@@ -6,25 +6,35 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  useColorScheme,
   Alert,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
+import { useThemeStore } from "../../stores/theme";
 import { MOODS, MOOD_COLORS } from "../../constants/moods";
 import { Mood } from "../../types/entry";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function NewEntryScreen() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
+export default function EntryFormScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { themeName } = useThemeStore();
+  const theme = Colors[themeName];
 
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [mood, setMood] = useState<Mood | null>(null);
+  const params = useLocalSearchParams<{
+    id?: string;
+    title?: string;
+    body?: string;
+    mood?: Mood;
+    entryDate?: string;
+  }>();
+
+  const isEditing = !!params.id;
+
+  const [title, setTitle] = useState(params.title ?? "");
+  const [body, setBody] = useState(params.body ?? "");
+  const [mood, setMood] = useState<Mood | null>((params.mood as Mood) ?? null);
 
   const handleSave = () => {
     if (!body.trim()) {
@@ -44,7 +54,7 @@ export default function NewEntryScreen() {
           <Ionicons name="close" size={24} color={theme.text} />
         </Pressable>
         <Text style={[Typography.headingSmall, { color: theme.text }]}>
-          New Entry
+          {isEditing ? "Edit Entry" : "New Entry"}
         </Text>
         <Pressable onPress={handleSave} style={styles.headerButton}>
           <Text style={[styles.saveText, { color: theme.accent }]}>Save</Text>

@@ -1,5 +1,5 @@
 import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
 import { useThemeStore } from "../../stores/theme";
@@ -7,58 +7,66 @@ import { useEntriesStore } from "../../stores/entries";
 import { EntryCard } from "../../components/EntryCard";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function TodayScreen() {
+export default function DayEntriesScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
   const { entries, deleteEntry, toggleFavorite } = useEntriesStore();
+  const params = useLocalSearchParams<{ date: string }>();
 
-  const today = new Date().toISOString().split("T")[0];
-  const todayEntries = entries.filter((e) => e.entryDate === today);
+  const dateStr = params.date ?? new Date().toISOString().split("T")[0];
+  const dayEntries = entries.filter((e) => e.entryDate === dateStr);
+
+  const dateLabel = new Date(dateStr + "T12:00:00").toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
-        <View>
-          <Text style={[Typography.heading, { color: theme.text }]}>
-            Today
-          </Text>
-          <Text style={[Typography.bodySmall, { color: theme.textSecondary }]}>
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </Text>
-        </View>
-
+      <View style={[styles.header, { paddingTop: insets.top + Spacing.md, borderBottomColor: theme.border }]}>
+        <Pressable onPress={() => router.back()} style={styles.headerButton}>
+          <Ionicons name="close" size={24} color={theme.text} />
+        </Pressable>
+        <Text style={[Typography.headingSmall, { color: theme.text, flex: 1, textAlign: "center" }]}>
+          {dateLabel}
+        </Text>
         <Pressable
-          onPress={() => router.push("/entry/new")}
-          style={({ pressed }) => [
-            styles.addButton,
-            { backgroundColor: theme.accent },
-            pressed && { opacity: 0.7 },
-          ]}
+          onPress={() =>
+            router.push({ pathname: "/entry/new", params: { entryDate: dateStr } })
+          }
+          style={styles.headerButton}
         >
-          <Ionicons name="add" size={24} color={theme.surface} />
+          <Ionicons name="add" size={24} color={theme.accent} />
         </Pressable>
       </View>
 
-      {todayEntries.length === 0 ? (
+      {dayEntries.length === 0 ? (
         <View style={styles.empty}>
-          <Ionicons
-            name="book-outline"
-            size={48}
-            color={theme.textSecondary}
-          />
+          <Ionicons name="book-outline" size={48} color={theme.textSecondary} />
           <Text style={[Typography.body, { color: theme.textSecondary }]}>
-            No entries today. Start writing!
+            No entries for this day.
           </Text>
+          <Pressable
+            onPress={() =>
+              router.push({ pathname: "/entry/new", params: { entryDate: dateStr } })
+            }
+            style={({ pressed }) => [
+              styles.addButton,
+              { backgroundColor: theme.accent },
+              pressed && { opacity: 0.7 },
+            ]}
+          >
+            <Text style={[styles.addButtonText, { color: theme.surface }]}>
+              Write something
+            </Text>
+          </Pressable>
         </View>
       ) : (
         <FlatList
-          data={todayEntries}
+          data={dayEntries}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
@@ -95,13 +103,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm + 4,
+    borderBottomWidth: 1,
   },
-  addButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  headerButton: {
+    padding: Spacing.sm,
+    minWidth: 60,
     alignItems: "center",
-    justifyContent: "center",
   },
   list: {
     padding: Spacing.md,
@@ -112,5 +120,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.md,
+  },
+  addButton: {
+    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.sm + 4,
+    borderRadius: 8,
+  },
+  addButtonText: {
+    ...Typography.body,
+    fontWeight: "600",
   },
 });

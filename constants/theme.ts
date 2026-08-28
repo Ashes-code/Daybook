@@ -1,7 +1,21 @@
 import { Platform } from "react-native";
+import { ThemeName } from "../types/entry";
 
-export const Colors = {
-  light: {
+export type ThemeColors = {
+  background: string;
+  surface: string;
+  text: string;
+  textSecondary: string;
+  border: string;
+  accent: string;
+  accentLight: string;
+  error: string;
+  separator: string;
+  tabActive: string;
+};
+
+export const Colors: Record<ThemeName, ThemeColors> = {
+  brownPaper: {
     background: "#FAF8F5",
     surface: "#FFFFFF",
     text: "#1A1714",
@@ -14,16 +28,28 @@ export const Colors = {
     tabActive: "#A0522D",
   },
   dark: {
-    background: "#1A1714",
-    surface: "#2A2520",
-    text: "#F5F0E8",
-    textSecondary: "#9E968E",
-    border: "#3A3530",
-    accent: "#B8A694",
-    accentLight: "#3A3530",
-    error: "#E74C3C",
-    separator: "#2A2520",
-    tabActive: "#E8A87C",
+    background: "#000000",
+    surface: "#1A1A1A",
+    text: "#FFFFFF",
+    textSecondary: "#A0A0A0",
+    border: "#2A2A2A",
+    accent: "#FFFFFF",
+    accentLight: "#333333",
+    error: "#FF4444",
+    separator: "#1A1A1A",
+    tabActive: "#FFFFFF",
+  },
+  light: {
+    background: "#F8F9FA",
+    surface: "#FFFFFF",
+    text: "#1A1A1A",
+    textSecondary: "#6C757D",
+    border: "#E9ECEF",
+    accent: "#4A90D9",
+    accentLight: "#E8F0FE",
+    error: "#DC3545",
+    separator: "#F1F3F5",
+    tabActive: "#4A90D9",
   },
 };
 

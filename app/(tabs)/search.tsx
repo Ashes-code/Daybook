@@ -1,23 +1,27 @@
 import { useState } from "react";
-import { View, Text, TextInput, FlatList, Pressable, StyleSheet, useColorScheme } from "react-native";
+import { View, Text, TextInput, FlatList, Pressable, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
-import { MOCK_ENTRIES } from "../../lib/mock";
+import { useThemeStore } from "../../stores/theme";
+import { useEntriesStore } from "../../stores/entries";
 import { EntryCard } from "../../components/EntryCard";
 import { Ionicons } from "@expo/vector-icons";
 import { Mood } from "../../types/entry";
 import { MOODS, MOOD_COLORS } from "../../constants/moods";
 
 export default function SearchScreen() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
+  const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { themeName } = useThemeStore();
+  const theme = Colors[themeName];
+  const { entries, deleteEntry, toggleFavorite } = useEntriesStore();
   const [query, setQuery] = useState("");
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
 
   const results =
     query.length > 0 || selectedMood !== null
-      ? MOCK_ENTRIES.filter((e) => {
+      ? entries.filter((e) => {
           const matchesQuery =
             query.length === 0 ||
             e.body.toLowerCase().includes(query.toLowerCase()) ||
@@ -135,7 +139,23 @@ export default function SearchScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
-            <EntryCard entry={item} onPress={() => {}} />
+            <EntryCard
+              entry={item}
+              onPress={(entry) =>
+                router.push({
+                  pathname: "/entry/new",
+                  params: {
+                    id: entry.id,
+                    title: entry.title ?? "",
+                    body: entry.body,
+                    mood: entry.mood ?? "",
+                    entryDate: entry.entryDate,
+                  },
+                })
+              }
+              onDelete={deleteEntry}
+              onToggleFavorite={toggleFavorite}
+            />
           )}
         />
       )}
