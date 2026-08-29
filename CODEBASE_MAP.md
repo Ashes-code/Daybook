@@ -74,6 +74,19 @@ Living map of the Daybook repository. **Update this file** when folders/files ga
 - Updated all screens to use entries store instead of mock data directly
 - Lint passes clean
 
+### 2026-08-28 — Welcome/Splash Screen (M2 Auth)
+
+- Created Welcome screen (`app/welcome.tsx`) with book icon, tagline, "Get Started" and "Sign In" buttons
+- Registered as modal route in root layout
+- Uses book icon from About page for consistent branding
+- Lint passes clean
+
+### 2026-08-28 — Empty State Polish (Today Screen)
+
+- Redesigned Today empty state with book icon circle, clear title, descriptive body text, and primary CTA button
+- Matches welcome screen visual language
+- Lint passes clean
+
 ---
 
 ## Top-level files
@@ -115,6 +128,7 @@ File-based routing. The file tree **is** the navigation tree.
 | `app/favorites/index.tsx` | Favorited entries list | Profile features |
 | `app/appearance/index.tsx` | Theme switcher (3 themes) | Profile features |
 | `app/about/index.tsx` | App summary + version | Profile features |
+| `app/welcome.tsx` | Welcome/Splash screen with Get Started + Sign In | M2 auth |
 
 ---
 

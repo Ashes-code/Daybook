@@ -47,14 +47,27 @@ export default function TodayScreen() {
 
       {todayEntries.length === 0 ? (
         <View style={styles.empty}>
-          <Ionicons
-            name="book-outline"
-            size={48}
-            color={theme.textSecondary}
-          />
-          <Text style={[Typography.body, { color: theme.textSecondary }]}>
-            No entries today. Start writing!
+          <View style={[styles.emptyIcon, { backgroundColor: theme.accent + "15" }]}>
+            <Ionicons name="book-outline" size={48} color={theme.accent} />
+          </View>
+          <Text style={[styles.emptyTitle, { color: theme.text }]}>
+            Nothing written yet
           </Text>
+          <Text style={[styles.emptyBody, { color: theme.textSecondary }]}>
+            Today is a blank page. Capture a thought, a moment, anything.
+          </Text>
+          <Pressable
+            onPress={() => router.push("/entry/new")}
+            style={({ pressed }) => [
+              styles.emptyButton,
+              { backgroundColor: theme.accent },
+              pressed && { opacity: 0.8 },
+            ]}
+          >
+            <Text style={[styles.emptyButtonText, { color: theme.surface }]}>
+              Write your first entry
+            </Text>
+          </Pressable>
         </View>
       ) : (
         <FlatList
@@ -111,6 +124,33 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: Spacing.md,
+    gap: Spacing.lg,
+    paddingHorizontal: Spacing.xl,
+  },
+  emptyIcon: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyTitle: {
+    ...Typography.headingSmall,
+    textAlign: "center",
+  },
+  emptyBody: {
+    ...Typography.body,
+    textAlign: "center",
+    maxWidth: 280,
+  },
+  emptyButton: {
+    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.md,
+    borderRadius: 10,
+    marginTop: Spacing.sm,
+  },
+  emptyButtonText: {
+    ...Typography.body,
+    fontWeight: "600",
   },
 });

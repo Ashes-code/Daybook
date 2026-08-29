@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     paddingHorizontal: Spacing.md,
     gap: Spacing.sm,
+    marginTop: Spacing.md,
   },
   statCard: {
     width: "48%",

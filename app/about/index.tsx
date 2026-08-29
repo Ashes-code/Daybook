@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: Spacing.md,
     paddingBottom: Spacing.xxl,
+    marginTop: Spacing.md,
   },
   iconContainer: {
     alignItems: "center",

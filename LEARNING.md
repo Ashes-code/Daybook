@@ -70,9 +70,9 @@ Design notes:
 | 19 | Create Supabase project at supabase.com | ⬜ | You do this in browser |
 | 20 | Set up `.env` with `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` | ⬜ | Never commit secrets |
 | 21 | Create Supabase client in `lib/supabase.ts` | ⬜ | Configured with SecureStore for session persistence |
-| 22 | Build Welcome/Splash screen | ⬜ | App intro — app name, tagline, "Get Started" + "Sign In" buttons. Use book icon |
-| 23 | Build empty state design for Today screen | ⬜ | Illustration + prompt when no entries exist |
-| 24 | Build sign up screen (email + password) | ⬜ | Designed so Google sign-in can be added below later |
+| 22 | Build Welcome/Splash screen | ✅ | App intro — app name, tagline, "Get Started" + "Sign In" buttons. Use book icon |
+| 23 | Build empty state design for Today screen | ✅ | Illustration + prompt when no entries exist |
+| 24 | Build sign up screen (email + password) | ✅ | Designed so Google sign-in can be added below later |
 | 25 | Build sign in screen (email + password) | ⬜ | Designed so Google sign-in can be added below later |
 | 26 | Set up auth gate in root layout | ⬜ | Redirect unauthenticated users to welcome/auth |
 | 27 | Wire sign out to Profile screen | ⬜ | Show user email + sign out button |

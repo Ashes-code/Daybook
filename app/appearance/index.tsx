@@ -1,4 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
 import { useThemeStore } from "../../stores/theme";
@@ -24,16 +25,21 @@ const THEMES: { name: ThemeName; label: string; description: string }[] = [
 ];
 
 export default function AppearanceScreen() {
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const { themeName, setTheme } = useThemeStore();
   const currentTheme = Colors[themeName];
 
   return (
     <View style={[styles.container, { backgroundColor: currentTheme.background }]}>
-      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
-        <Text style={[Typography.heading, { color: currentTheme.text }]}>
+      <View style={[styles.header, { paddingTop: insets.top + Spacing.md, borderBottomColor: currentTheme.border }]}>
+        <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color={currentTheme.text} />
+        </Pressable>
+        <Text style={[Typography.heading, { color: currentTheme.text, flex: 1, textAlign: "center" }]}>
           Appearance
         </Text>
+        <View style={styles.backButton} />
       </View>
 
       <Text style={[styles.sectionLabel, { color: currentTheme.textSecondary }]}>
@@ -101,17 +107,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.md,
+    paddingBottom: Spacing.sm + 4,
+    borderBottomWidth: 1,
+  },
+  backButton: {
+    padding: Spacing.sm,
+    minWidth: 40,
   },
   sectionLabel: {
     ...Typography.label,
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.sm,
+    marginTop: Spacing.md,
   },
   themeList: {
     paddingHorizontal: Spacing.md,
     gap: Spacing.md,
+    marginTop: Spacing.lg,
   },
   themeCard: {
     borderRadius: 12,

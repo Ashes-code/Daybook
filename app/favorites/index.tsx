@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   list: {
     padding: Spacing.md,
     gap: Spacing.md,
+    marginTop: Spacing.md,
   },
   empty: {
     flex: 1,
@@ -94,5 +95,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: Spacing.md,
     paddingHorizontal: Spacing.xl,
+    marginTop: Spacing.md,
   },
 });

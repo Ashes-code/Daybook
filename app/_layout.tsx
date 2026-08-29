@@ -65,6 +65,22 @@ export default function RootLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="welcome"
+          options={{
+            title: "Welcome",
+            presentation: "modal",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="signup"
+          options={{
+            title: "Sign Up",
+            presentation: "modal",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </>
   );
