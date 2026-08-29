@@ -1,13 +1,15 @@
 import { View, Text, Pressable, StyleSheet, useColorScheme } from "react-native";
 import { useRouter } from "expo-router";
 import { Colors, Spacing, Typography } from "../constants/theme";
+import { useThemeStore } from "../stores/theme";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const themeName = colorScheme === "dark" ? "dark" : "brownPaper";
-  const theme = Colors[themeName];
+  const { themeName } = useThemeStore();
+  const effectiveTheme = themeName === "brownPaper" ? (colorScheme === "dark" ? "dark" : "brownPaper") : themeName;
+  const theme = Colors[effectiveTheme as "brownPaper" | "dark" | "light"];
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

@@ -1,8 +1,9 @@
-import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
+import { View, Text, Pressable, ScrollView, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
 import { useThemeStore } from "../../stores/theme";
+import { useAuthStore } from "../../stores/auth";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ProfileScreen() {
@@ -10,6 +11,20 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
+  const { user, signOut } = useAuthStore();
+
+  const handleSignOut = async () => {
+    Alert.alert("Sign out", "Are you sure you want to sign out?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Sign Out",
+        style: "destructive",
+        onPress: async () => {
+          await signOut();
+        },
+      },
+    ]);
+  };
 
   return (
     <ScrollView
@@ -26,57 +41,81 @@ export default function ProfileScreen() {
         <View style={[styles.avatar, { backgroundColor: theme.accent + "20" }]}>
           <Ionicons name="person" size={48} color={theme.accent} />
         </View>
-        <Text style={[Typography.body, { color: theme.textSecondary }]}>
-          Sign in to sync your entries across devices
-        </Text>
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            { backgroundColor: theme.accent },
-            pressed && { opacity: 0.7 },
-          ]}
-        >
-          <Text style={[styles.buttonText, { color: theme.surface }]}>
-            Sign In
-          </Text>
-        </Pressable>
+
+        {user ? (
+          <>
+            <Text style={[Typography.body, { color: theme.text }]}>{user.email}</Text>
+            <Pressable
+              onPress={handleSignOut}
+              style={({ pressed }) => [
+                styles.button,
+                { backgroundColor: theme.error },
+                pressed && { opacity: 0.7 },
+              ]}
+            >
+              <Text style={[styles.buttonText, { color: theme.surface }]}>
+                Sign Out
+              </Text>
+            </Pressable>
+          </>
+        ) : (
+          <>
+            <Text style={[Typography.body, { color: theme.textSecondary }]}>
+              Sign in to sync your entries across devices
+            </Text>
+            <Pressable
+              onPress={() => router.push("/signin")}
+              style={({ pressed }) => [
+                styles.button,
+                { backgroundColor: theme.accent },
+                pressed && { opacity: 0.7 },
+              ]}
+            >
+              <Text style={[styles.buttonText, { color: theme.surface }]}>
+                Sign In
+              </Text>
+            </Pressable>
+          </>
+        )}
       </View>
 
-      <View style={styles.section}>
-        <Text style={[Typography.label, { color: theme.textSecondary }]}>
-          INSIGHTS
-        </Text>
-
-        <Pressable
-          onPress={() => router.push("/analytics")}
-          style={({ pressed }) => [
-            styles.settingsRow,
-            { backgroundColor: theme.surface, borderColor: theme.border },
-            pressed && { opacity: 0.7 },
-          ]}
-        >
-          <Ionicons name="bar-chart-outline" size={20} color={theme.text} />
-          <Text style={[Typography.body, { color: theme.text, flex: 1 }]}>
-            Analytics
+      {user && (
+        <View style={styles.section}>
+          <Text style={[Typography.label, { color: theme.textSecondary }]}>
+            INSIGHTS
           </Text>
-          <Ionicons name="chevron-forward" size={16} color={theme.textSecondary} />
-        </Pressable>
 
-        <Pressable
-          onPress={() => router.push("/favorites")}
-          style={({ pressed }) => [
-            styles.settingsRow,
-            { backgroundColor: theme.surface, borderColor: theme.border },
-            pressed && { opacity: 0.7 },
-          ]}
-        >
-          <Ionicons name="heart-outline" size={20} color={theme.text} />
-          <Text style={[Typography.body, { color: theme.text, flex: 1 }]}>
-            Favorites
-          </Text>
-          <Ionicons name="chevron-forward" size={16} color={theme.textSecondary} />
-        </Pressable>
-      </View>
+          <Pressable
+            onPress={() => router.push("/analytics")}
+            style={({ pressed }) => [
+              styles.settingsRow,
+              { backgroundColor: theme.surface, borderColor: theme.border },
+              pressed && { opacity: 0.7 },
+            ]}
+          >
+            <Ionicons name="bar-chart-outline" size={20} color={theme.text} />
+            <Text style={[Typography.body, { color: theme.text, flex: 1 }]}>
+              Analytics
+            </Text>
+            <Ionicons name="chevron-forward" size={16} color={theme.textSecondary} />
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push("/favorites")}
+            style={({ pressed }) => [
+              styles.settingsRow,
+              { backgroundColor: theme.surface, borderColor: theme.border },
+              pressed && { opacity: 0.7 },
+            ]}
+          >
+            <Ionicons name="heart-outline" size={20} color={theme.text} />
+            <Text style={[Typography.body, { color: theme.text, flex: 1 }]}>
+              Favorites
+            </Text>
+            <Ionicons name="chevron-forward" size={16} color={theme.textSecondary} />
+          </Pressable>
+        </View>
+      )}
 
       <View style={styles.section}>
         <Text style={[Typography.label, { color: theme.textSecondary }]}>

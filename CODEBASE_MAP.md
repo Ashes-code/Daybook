@@ -87,6 +87,53 @@ Living map of the Daybook repository. **Update this file** when folders/files ga
 - Matches welcome screen visual language
 - Lint passes clean
 
+### 2026-08-28 — Sign Up Screen (M2 Auth)
+
+- Created Sign Up screen (`app/signup.tsx`) with email, password, confirm password fields
+- Validates email, password length (6+ chars), and password match
+- Calls Supabase auth.signUp, shows confirmation alert
+- "Already have an account?" link to Sign In
+- Registered as modal route in root layout
+- Lint passes clean
+
+### 2026-08-28 — Sign In Screen (M2 Auth)
+
+- Created Sign In screen (`app/signin.tsx`) with email and password fields
+- Validates email and password presence
+- Calls Supabase auth.signInWithPassword, navigates back on success
+- "Don't have an account?" link to Sign Up
+- Registered as modal route in root layout
+- Lint passes clean
+
+### 2026-08-28 — Auth Gate (M2 Auth)
+
+- Created auth store (`stores/auth.ts`) with Zustand for session management
+- Implemented auth gate in `app/_layout.tsx`:
+  - Loading state shows spinner while initializing Supabase session
+  - Unauthenticated users see Welcome/Sign Up/Sign In flow
+  - Authenticated users see main tabs + entry modals
+- Listens to auth state changes for real-time session updates
+- Lint passes clean
+
+### 2026-08-28 — Profile Sign Out (M2 Auth)
+
+- Updated Profile screen to use auth store
+- Shows user email + Sign Out button when authenticated
+- Shows "Sign In" button when unauthenticated (redirects to sign in)
+- Confirmation alert before signing out
+- Insights section only visible when authenticated
+- Lint passes clean
+
+### 2026-08-28 — Auth Flow Complete (M2 Auth)
+
+- Full auth flow working: Welcome → Sign Up/Sign In → Tabs → Profile Sign Out
+- Session persists across app restarts via SecureStore
+- Email confirmation flow integrated
+- Auth gate redirects unauthenticated users
+- Profile shows user email + sign out when signed in
+- All lint passes clean
+- **M2 Complete!**
+
 ---
 
 ## Top-level files
@@ -129,6 +176,8 @@ File-based routing. The file tree **is** the navigation tree.
 | `app/appearance/index.tsx` | Theme switcher (3 themes) | Profile features |
 | `app/about/index.tsx` | App summary + version | Profile features |
 | `app/welcome.tsx` | Welcome/Splash screen with Get Started + Sign In | M2 auth |
+| `app/signup.tsx` | Sign up screen (email + password) | M2 auth |
+| `app/signin.tsx` | Sign in screen (email + password) | M2 auth |
 
 ---
 
@@ -184,6 +233,7 @@ File-based routing. The file tree **is** the navigation tree.
 | --- | --- |
 | `stores/theme.ts` | Theme selection (brownPaper, dark, light) |
 | `stores/entries.ts` | Entry state management (favorites, delete) |
+| `stores/auth.ts` | Auth session, user, signOut, auth state listener |
 
 ---
 

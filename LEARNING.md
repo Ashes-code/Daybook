@@ -73,12 +73,11 @@ Design notes:
 | 22 | Build Welcome/Splash screen | ✅ | App intro — app name, tagline, "Get Started" + "Sign In" buttons. Use book icon |
 | 23 | Build empty state design for Today screen | ✅ | Illustration + prompt when no entries exist |
 | 24 | Build sign up screen (email + password) | ✅ | Designed so Google sign-in can be added below later |
-| 25 | Build sign in screen (email + password) | ⬜ | Designed so Google sign-in can be added below later |
-| 26 | Set up auth gate in root layout | ⬜ | Redirect unauthenticated users to welcome/auth |
-| 27 | Wire sign out to Profile screen | ⬜ | Show user email + sign out button |
-| 28 | Test auth flow end-to-end | ⬜ | Sign up → stay signed in → sign out → back to welcome |
+| 25 | Build sign in screen (email + password) | ✅ | Designed so Google sign-in can be added below later |
+| 26 | Set up auth gate in root layout | ✅ | Redirect unauthenticated users to welcome/auth |
+| 27 | Wire sign out to Profile screen | ✅ | Show user email + sign out button |
+| 28 | Test auth flow end-to-end | ✅ | Sign up → stay signed in → sign out → back to welcome |
 | 35 | Update app icon to use book icon | ⬜ | Match the About page book icon |
-| 36 | Update splash screen to use book icon | ⬜ | Consistent branding |
 
 ---
 
