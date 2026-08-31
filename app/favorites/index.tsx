@@ -4,8 +4,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
 import { useThemeStore } from "../../stores/theme";
 import { useEntriesStore } from "../../stores/entries";
+import { useAuthStore } from "../../stores/auth";
 import { EntryCard } from "../../components/EntryCard";
 import { Ionicons } from "@expo/vector-icons";
+import { updateEntry as updateEntryService, deleteEntryRemote } from "../../services/entries";
+import NetInfo from "@react-native-community/netinfo";
 
 export default function FavoritesScreen() {
   const router = useRouter();
@@ -13,8 +16,26 @@ export default function FavoritesScreen() {
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
   const { entries, toggleFavorite, deleteEntry } = useEntriesStore();
+  const { user } = useAuthStore();
 
   const favorites = entries.filter((e) => e.favorited);
+
+  const handleToggleFavorite = async (entry: typeof entries[0]) => {
+    toggleFavorite(entry.id);
+    const net = await NetInfo.fetch();
+    if (net.isConnected && user) {
+      const updated = useEntriesStore.getState().entries.find((e) => e.id === entry.id);
+      if (updated) await updateEntryService(updated, user.id);
+    }
+  };
+
+  const handleDelete = async (entry: typeof entries[0]) => {
+    deleteEntry(entry.id);
+    const net = await NetInfo.fetch();
+    if (net.isConnected && user) {
+      await deleteEntryRemote(entry.id, user.id);
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -58,8 +79,8 @@ export default function FavoritesScreen() {
                   },
                 })
               }
-              onDelete={deleteEntry}
-              onToggleFavorite={toggleFavorite}
+              onDelete={handleDelete}
+              onToggleFavorite={handleToggleFavorite}
             />
           )}
         />
