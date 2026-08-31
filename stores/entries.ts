@@ -7,37 +7,53 @@ const ENTRIES_STORAGE_KEY = "daybook-entries";
 interface EntriesState {
   entries: Entry[];
   loading: boolean;
-  toggleFavorite: (id: string) => void;
-  deleteEntry: (id: string) => void;
   addEntry: (entry: Entry) => void;
   updateEntry: (entry: Entry) => void;
-  getFavorites: () => Entry[];
-  loadEntries: () => Promise<void>;
+  deleteEntry: (id: string) => void;
+  toggleFavorite: (id: string) => void;
   setEntries: (entries: Entry[]) => void;
+  loadEntries: () => Promise<void>;
 }
 
 export const useEntriesStore = create<EntriesState>((set, get) => ({
   entries: [],
   loading: true,
-  toggleFavorite: (id) =>
-    set((state) => ({
-      entries: state.entries.map((e) =>
-        e.id === id ? { ...e, favorited: !e.favorited } : e
-      ),
-    })),
-  deleteEntry: (id) =>
-    set((state) => ({
-      entries: state.entries.filter((e) => e.id !== id),
-    })),
+
   addEntry: (entry) =>
-    set((state) => ({
-      entries: [entry, ...state.entries],
-    })),
+    set((state) => {
+      const updated = [entry, ...state.entries];
+      AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(updated)).catch(() => {});
+      return { entries: updated };
+    }),
+
   updateEntry: (entry) =>
-    set((state) => ({
-      entries: state.entries.map((e) => (e.id === entry.id ? entry : e)),
-    })),
-  getFavorites: () => get().entries.filter((e) => e.favorited),
+    set((state) => {
+      const updated = state.entries.map((e) => (e.id === entry.id ? entry : e));
+      AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(updated)).catch(() => {});
+      return { entries: updated };
+    }),
+
+  deleteEntry: (id) =>
+    set((state) => {
+      const updated = state.entries.filter((e) => e.id !== id);
+      AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(updated)).catch(() => {});
+      return { entries: updated };
+    }),
+
+  toggleFavorite: (id) =>
+    set((state) => {
+      const updated = state.entries.map((e) =>
+        e.id === id ? { ...e, favorited: !e.favorited } : e
+      );
+      AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(updated)).catch(() => {});
+      return { entries: updated };
+    }),
+
+  setEntries: (entries) => {
+    set({ entries });
+    AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(entries)).catch(() => {});
+  },
+
   loadEntries: async () => {
     try {
       const stored = await AsyncStorage.getItem(ENTRIES_STORAGE_KEY);
@@ -51,12 +67,4 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
       set({ loading: false });
     }
   },
-  setEntries: (entries) => {
-    set({ entries });
-    AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(entries)).catch(() => {});
-  },
 }));
-
-export const persistEntriesMiddleware = (entries: Entry[]) => {
-  AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(entries)).catch(() => {});
-};

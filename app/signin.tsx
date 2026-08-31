@@ -1,45 +1,44 @@
-import { View, Text, TextInput, Pressable, StyleSheet, useColorScheme, Alert, Keyboard, TextInputProps, useMemo } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, useColorScheme, Alert, Keyboard, TextInputProps } from "react-native";
 import { useRouter } from "expo-router";
 import { Colors, Spacing, Typography } from "../constants/theme";
 import { useThemeStore } from "../stores/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../lib/supabase";
-import { useState, useRef, forwardRef } from "react";
-import * as WebBrowser from "expo-web-browser";
+import { useState, useRef, forwardRef, useMemo } from "react";
+
 
 interface InputWithToggleProps extends TextInputProps {
   showPassword: boolean;
   onToggleShow: () => void;
+  surfaceColor: string;
+  textColor: string;
+  borderColor: string;
+  textSecondaryColor: string;
 }
 
 const InputWithToggle = forwardRef<TextInput, InputWithToggleProps>(
-  ({ showPassword, onToggleShow, secureTextEntry, ...props }, ref) => {
-    const colorScheme = useColorScheme();
-    const { themeName } = useThemeStore();
-    const effectiveTheme = themeName === "brownPaper" ? (colorScheme === "dark" ? "dark" : "brownPaper") : themeName;
-    const theme = Colors[effectiveTheme as "brownPaper" | "dark" | "light"];
-
+  ({ showPassword, onToggleShow, secureTextEntry, surfaceColor, textColor, borderColor, textSecondaryColor, ...props }, ref) => {
     return (
-      <View style={styles.inputWrapper}>
+      <View style={staticStyles.inputWrapper}>
         <TextInput
           ref={ref}
           {...props}
           secureTextEntry={secureTextEntry && !showPassword}
           style={[
-            styles.input,
+            staticStyles.input,
             {
-              backgroundColor: theme.surface,
-              color: theme.text,
-              borderColor: theme.border,
+              backgroundColor: surfaceColor,
+              color: textColor,
+              borderColor: borderColor,
               paddingRight: Spacing.xl + Spacing.md,
             },
           ]}
         />
-        <Pressable onPress={onToggleShow} style={styles.eyeButton}>
+        <Pressable onPress={onToggleShow} style={staticStyles.eyeButton}>
           <Ionicons
             name={showPassword ? "eye-off-outline" : "eye-outline"}
             size={22}
-            color={theme.textSecondary}
+            color={textSecondaryColor}
           />
         </Pressable>
       </View>
@@ -48,6 +47,25 @@ const InputWithToggle = forwardRef<TextInput, InputWithToggleProps>(
 );
 
 InputWithToggle.displayName = "InputWithToggle";
+
+const staticStyles = StyleSheet.create({
+  inputWrapper: {
+    position: "relative",
+    marginTop: Spacing.sm,
+  },
+  input: {
+    ...Typography.body,
+    padding: Spacing.md,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  eyeButton: {
+    position: "absolute",
+    right: Spacing.md,
+    top: Spacing.md + 4,
+    padding: Spacing.xs,
+  },
+});
 
 export default function SignInScreen() {
   const router = useRouter();
@@ -84,22 +102,6 @@ export default function SignInScreen() {
     subtitle: {
       ...Typography.body,
       textAlign: "center",
-    },
-    inputWrapper: {
-      position: "relative",
-      marginTop: Spacing.sm,
-    },
-    input: {
-      ...Typography.body,
-      padding: Spacing.md,
-      borderRadius: 10,
-      borderWidth: 1,
-    },
-    eyeButton: {
-      position: "absolute",
-      right: Spacing.md,
-      top: Spacing.md + 4,
-      padding: Spacing.xs,
     },
     primaryButton: {
       paddingVertical: Spacing.md,
@@ -197,34 +199,6 @@ export default function SignInScreen() {
     router.replace("/(tabs)");
   };
 
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: "daybook://auth-callback",
-        },
-      });
-
-      if (error) throw error;
-
-      if (data.url) {
-        const result = await WebBrowser.openAuthSessionAsync(data.url, "daybook://auth-callback");
-        if (result.type === "success") {
-          const { url } = result;
-          const { error: sessionError } = await supabase.auth.getSessionFromUrl(url);
-          if (sessionError) throw sessionError;
-          router.replace("/(tabs)");
-        }
-      }
-    } catch (error: any) {
-      Alert.alert("Google sign in failed", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.content}>
@@ -239,7 +213,7 @@ export default function SignInScreen() {
 
         <TextInput
           style={[
-            styles.input,
+            staticStyles.input,
             {
               backgroundColor: theme.surface,
               color: theme.text,
@@ -271,6 +245,10 @@ export default function SignInScreen() {
           onSubmitEditing={handleSignIn}
           showPassword={showPassword}
           onToggleShow={() => setShowPassword(!showPassword)}
+          surfaceColor={theme.surface}
+          textColor={theme.text}
+          borderColor={theme.border}
+          textSecondaryColor={theme.textSecondary}
         />
 
         <Pressable
@@ -288,26 +266,6 @@ export default function SignInScreen() {
           ) : (
             <Text style={[styles.primaryButtonText, { color: theme.surface }]}>Sign In</Text>
           )}
-        </Pressable>
-
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>or</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        <Pressable
-          disabled={loading}
-          onPress={handleGoogleSignIn}
-          style={({ pressed }) => [
-            styles.googleButton,
-            { borderColor: theme.border },
-            pressed && { opacity: 0.7 },
-            loading && { opacity: 0.6 },
-          ]}
-        >
-          <Ionicons name="logo-google" size={22} color={theme.text} style={styles.googleIcon} />
-          <Text style={[styles.googleButtonText, { color: theme.text }]}>Continue with Google</Text>
         </Pressable>
 
         <View style={styles.footer}>

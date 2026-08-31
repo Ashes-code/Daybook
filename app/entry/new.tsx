@@ -12,15 +12,21 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
 import { useThemeStore } from "../../stores/theme";
+import { useEntriesStore } from "../../stores/entries";
+import { useAuthStore } from "../../stores/auth";
 import { MOODS, MOOD_COLORS } from "../../constants/moods";
 import { Mood } from "../../types/entry";
 import { Ionicons } from "@expo/vector-icons";
+import { createEntry, updateEntry as updateEntryService } from "../../services/entries";
+import NetInfo from "@react-native-community/netinfo";
 
 export default function EntryFormScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
+  const { addEntry, updateEntry } = useEntriesStore();
+  const { user } = useAuthStore();
 
   const params = useLocalSearchParams<{
     id?: string;
@@ -35,16 +41,60 @@ export default function EntryFormScreen() {
   const [title, setTitle] = useState(params.title ?? "");
   const [body, setBody] = useState(params.body ?? "");
   const [mood, setMood] = useState<Mood | null>((params.mood as Mood) ?? null);
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!body.trim()) {
       Alert.alert("Empty entry", "Write something before saving.");
       return;
     }
 
-    Alert.alert("Saved!", "Entry saved successfully.", [
-      { text: "OK", onPress: () => router.back() },
-    ]);
+    setSaving(true);
+    const now = new Date().toISOString();
+    const entryDate = params.entryDate || new Date().toISOString().split("T")[0];
+
+    if (isEditing && params.id) {
+      const existingEntry = useEntriesStore.getState().entries.find((e) => e.id === params.id);
+      const updated = {
+        id: params.id,
+        userId: user?.id ?? "",
+        entryDate,
+        title: title.trim() || null,
+        body: body.trim(),
+        mood,
+        favorited: existingEntry?.favorited ?? false,
+        createdAt: existingEntry?.createdAt ?? now,
+        updatedAt: now,
+      };
+      updateEntry(updated);
+
+      const net = await NetInfo.fetch();
+      if (net.isConnected && user) {
+        await updateEntryService(updated, user.id);
+      }
+    } else {
+      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const entry = {
+        id,
+        userId: user?.id ?? "",
+        entryDate,
+        title: title.trim() || null,
+        body: body.trim(),
+        mood,
+        favorited: false,
+        createdAt: now,
+        updatedAt: now,
+      };
+      addEntry(entry);
+
+      const net = await NetInfo.fetch();
+      if (net.isConnected && user) {
+        await createEntry(entry, user.id);
+      }
+    }
+
+    setSaving(false);
+    router.back();
   };
 
   return (
@@ -56,8 +106,10 @@ export default function EntryFormScreen() {
         <Text style={[Typography.headingSmall, { color: theme.text }]}>
           {isEditing ? "Edit Entry" : "New Entry"}
         </Text>
-        <Pressable onPress={handleSave} style={styles.headerButton}>
-          <Text style={[styles.saveText, { color: theme.accent }]}>Save</Text>
+        <Pressable onPress={handleSave} disabled={saving} style={styles.headerButton}>
+          <Text style={[styles.saveText, { color: theme.accent, opacity: saving ? 0.5 : 1 }]}>
+            {saving ? "Saving..." : "Save"}
+          </Text>
         </Pressable>
       </View>
 

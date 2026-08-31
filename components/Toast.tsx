@@ -1,7 +1,14 @@
-import { View, Text, StyleSheet, Animated, useColorScheme } from "react-native";
+import { View, Text, StyleSheet, Animated, useColorScheme, useState, useEffect } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Spacing, Typography } from "../constants/theme";
-import { Toast } from "../stores/toast";
+import { useToastStore } from "../stores/toast";
+
+interface Toast {
+  id: string;
+  message: string;
+  type: "info" | "success" | "error" | "offline" | "online";
+  duration?: number;
+}
 
 interface ToastItemProps {
   toast: Toast;
@@ -20,16 +27,7 @@ export function ToastItem({ toast, onDismiss }: ToastItemProps) {
       Animated.timing(opacity, { toValue: 1, duration: 300, useNativeDriver: true }),
       Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
     ]).start();
-  }, []);
-
-  const dismiss = () => {
-    Animated.parallel([
-      Animated.timing(opacity, { toValue: 0, duration: 200, useNativeDriver: true }),
-      Animated.timing(translateY, { toValue: -20, duration: 200, useNativeDriver: true }),
-    ]).start(({ finished }) => {
-      if (finished) onDismiss(toast.id);
-    });
-  };
+  }, [opacity, translateY]);
 
   const getIcon = () => {
     switch (toast.type) {
@@ -66,8 +64,6 @@ export function ToastItem({ toast, onDismiss }: ToastItemProps) {
     </Animated.View>
   );
 }
-
-import { useState, useEffect } from "react";
 
 export function ToastContainer() {
   const { toasts, dismissToast } = useToastStore();

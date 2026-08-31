@@ -5,14 +5,18 @@ import { useEffect } from "react";
 import { useThemeStore } from "../stores/theme";
 import { Colors } from "../constants/theme";
 import { useAuthStore, initializeAuth } from "../stores/auth";
+import { useEntriesStore } from "../stores/entries";
 import { ToastContainer } from "../components/Toast";
 import { useNetworkSync } from "../hooks/useNetworkSync";
+import { fetchRemoteEntries, syncPendingOps } from "../services/entries";
+import NetInfo from "@react-native-community/netinfo";
 
 export default function RootLayout() {
   const { themeName, initializeTheme } = useThemeStore();
   const theme = Colors[themeName];
   const isDark = themeName === "dark";
   const { user, loading, initialized, setMounted } = useAuthStore();
+  const { loadEntries, setEntries } = useEntriesStore();
 
   useNetworkSync();
 
@@ -32,6 +36,24 @@ export default function RootLayout() {
       subscription?.unsubscribe();
     };
   }, [initializeTheme, setMounted]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const loadAndSync = async () => {
+      await loadEntries();
+      const net = await NetInfo.fetch();
+      if (net.isConnected) {
+        await syncPendingOps(user.id);
+        const remote = await fetchRemoteEntries(user.id);
+        if (remote.length > 0) {
+          setEntries(remote);
+        }
+      }
+    };
+
+    loadAndSync();
+  }, [user, loadEntries, setEntries]);
 
   if (!initialized || loading) {
     return (
