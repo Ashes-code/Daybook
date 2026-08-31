@@ -1,4 +1,5 @@
-import { View, Text, FlatList, StyleSheet, Pressable } from "react-native";
+import { useCallback, useState } from "react";
+import { View, Text, FlatList, StyleSheet, Pressable, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
@@ -7,7 +8,7 @@ import { useEntriesStore } from "../../stores/entries";
 import { useAuthStore } from "../../stores/auth";
 import { EntryCard } from "../../components/EntryCard";
 import { Ionicons } from "@expo/vector-icons";
-import { updateEntry as updateEntryService, deleteEntryRemote } from "../../services/entries";
+import { updateEntry as updateEntryService, deleteEntryRemote, fetchRemoteEntries, syncPendingOps } from "../../services/entries";
 import NetInfo from "@react-native-community/netinfo";
 
 export default function FavoritesScreen() {
@@ -15,10 +16,23 @@ export default function FavoritesScreen() {
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
-  const { entries, toggleFavorite, deleteEntry } = useEntriesStore();
+  const { entries, toggleFavorite, deleteEntry, setEntries } = useEntriesStore();
   const { user } = useAuthStore();
+  const [refreshing, setRefreshing] = useState(false);
 
   const favorites = entries.filter((e) => e.favorited);
+
+  const onRefresh = useCallback(async () => {
+    if (!user) return;
+    setRefreshing(true);
+    const net = await NetInfo.fetch();
+    if (net.isConnected) {
+      await syncPendingOps(user.id);
+      const remote = await fetchRemoteEntries(user.id);
+      if (remote.length > 0) setEntries(remote);
+    }
+    setRefreshing(false);
+  }, [user, setEntries]);
 
   const handleToggleFavorite = async (entry: typeof entries[0]) => {
     toggleFavorite(entry.id);
@@ -64,6 +78,14 @@ export default function FavoritesScreen() {
           data={favorites}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={theme.accent}
+              colors={[theme.accent]}
+            />
+          }
           renderItem={({ item }) => (
             <EntryCard
               entry={item}

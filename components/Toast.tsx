@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, Animated, useColorScheme, useState, useEffect } from "react-native";
+import { View, Text, StyleSheet, Animated, useState, useEffect } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Spacing, Typography } from "../constants/theme";
 import { useToastStore } from "../stores/toast";
+import { useThemeStore } from "../stores/theme";
 
 interface Toast {
   id: string;
@@ -16,8 +17,7 @@ interface ToastItemProps {
 }
 
 export function ToastItem({ toast, onDismiss }: ToastItemProps) {
-  const colorScheme = useColorScheme();
-  const themeName = colorScheme === "dark" ? "dark" : "brownPaper";
+  const { themeName } = useThemeStore();
   const theme = Colors[themeName];
   const [opacity] = useState(new Animated.Value(0));
   const [translateY] = useState(new Animated.Value(20));

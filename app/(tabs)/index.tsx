@@ -1,4 +1,5 @@
-import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
+import { useState, useCallback } from "react";
+import { View, Text, FlatList, Pressable, StyleSheet, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
@@ -7,7 +8,7 @@ import { useEntriesStore } from "../../stores/entries";
 import { useAuthStore } from "../../stores/auth";
 import { EntryCard } from "../../components/EntryCard";
 import { Ionicons } from "@expo/vector-icons";
-import { updateEntry as updateEntryService, deleteEntryRemote } from "../../services/entries";
+import { fetchRemoteEntries, syncPendingOps, updateEntry as updateEntryService, deleteEntryRemote } from "../../services/entries";
 import NetInfo from "@react-native-community/netinfo";
 
 export default function TodayScreen() {
@@ -15,11 +16,24 @@ export default function TodayScreen() {
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
-  const { entries, deleteEntry, toggleFavorite } = useEntriesStore();
+  const { entries, deleteEntry, toggleFavorite, setEntries } = useEntriesStore();
   const { user } = useAuthStore();
+  const [refreshing, setRefreshing] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
   const todayEntries = entries.filter((e) => e.entryDate === today);
+
+  const onRefresh = useCallback(async () => {
+    if (!user) return;
+    setRefreshing(true);
+    const net = await NetInfo.fetch();
+    if (net.isConnected) {
+      await syncPendingOps(user.id);
+      const remote = await fetchRemoteEntries(user.id);
+      if (remote.length > 0) setEntries(remote);
+    }
+    setRefreshing(false);
+  }, [user, setEntries]);
 
   const handleToggleFavorite = async (entry: typeof entries[0]) => {
     toggleFavorite(entry.id);
@@ -95,6 +109,14 @@ export default function TodayScreen() {
           data={todayEntries}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={theme.accent}
+              colors={[theme.accent]}
+            />
+          }
           renderItem={({ item }) => (
             <EntryCard
               entry={item}

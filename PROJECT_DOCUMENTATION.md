@@ -174,7 +174,7 @@ https://docs.expo.dev/versions/v57.0.0/
 
 ---
 
-### Milestone 2 — Auth + Supabase project (current)
+### Milestone 2 — Auth + Supabase project ✅
 
 - [x] Create Supabase project
 - [x] Env vars (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`)
@@ -191,13 +191,13 @@ https://docs.expo.dev/versions/v57.0.0/
 
 ---
 
-### Milestone 3 — Cloud entries CRUD
+### Milestone 3 — Cloud entries CRUD ✅
 
-- [ ] SQL migration: `entries` table + RLS policies
-- [ ] Create / read / update / delete entries for current user
-- [ ] Wire Today, Calendar, Search to real data
-- [ ] Loading / empty / error states
-- [ ] Pull-to-refresh
+- [x] SQL migration: `entries` table + RLS policies
+- [x] Create / read / update / delete entries for current user
+- [x] Wire Today, Calendar, Search to real data
+- [x] Loading / empty / error states
+- [x] Pull-to-refresh
 
 **Learning focus:** Postgres, RLS, async data fetching, mutations.
 

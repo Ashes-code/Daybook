@@ -1,23 +1,28 @@
-import { useState } from "react";
-import { View, Text, TextInput, FlatList, Pressable, StyleSheet } from "react-native";
+import { useState, useCallback } from "react";
+import { View, Text, TextInput, FlatList, Pressable, StyleSheet, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
 import { useThemeStore } from "../../stores/theme";
 import { useEntriesStore } from "../../stores/entries";
+import { useAuthStore } from "../../stores/auth";
 import { EntryCard } from "../../components/EntryCard";
 import { Ionicons } from "@expo/vector-icons";
 import { Mood } from "../../types/entry";
 import { MOODS, MOOD_COLORS } from "../../constants/moods";
+import { fetchRemoteEntries, syncPendingOps, updateEntry as updateEntryService, deleteEntryRemote } from "../../services/entries";
+import NetInfo from "@react-native-community/netinfo";
 
 export default function SearchScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
-  const { entries, deleteEntry, toggleFavorite } = useEntriesStore();
+  const { entries, deleteEntry, toggleFavorite, setEntries } = useEntriesStore();
+  const { user } = useAuthStore();
   const [query, setQuery] = useState("");
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const results =
     query.length > 0 || selectedMood !== null
@@ -30,6 +35,35 @@ export default function SearchScreen() {
           return matchesQuery && matchesMood;
         })
       : [];
+
+  const onRefresh = useCallback(async () => {
+    if (!user) return;
+    setRefreshing(true);
+    const net = await NetInfo.fetch();
+    if (net.isConnected) {
+      await syncPendingOps(user.id);
+      const remote = await fetchRemoteEntries(user.id);
+      if (remote.length > 0) setEntries(remote);
+    }
+    setRefreshing(false);
+  }, [user, setEntries]);
+
+  const handleToggleFavorite = async (entry: typeof entries[0]) => {
+    toggleFavorite(entry.id);
+    const net = await NetInfo.fetch();
+    if (net.isConnected && user) {
+      const updated = useEntriesStore.getState().entries.find((e) => e.id === entry.id);
+      if (updated) await updateEntryService(updated, user.id);
+    }
+  };
+
+  const handleDelete = async (entry: typeof entries[0]) => {
+    deleteEntry(entry.id);
+    const net = await NetInfo.fetch();
+    if (net.isConnected && user) {
+      await deleteEntryRemote(entry.id, user.id);
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -138,6 +172,14 @@ export default function SearchScreen() {
           data={results}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={theme.accent}
+              colors={[theme.accent]}
+            />
+          }
           renderItem={({ item }) => (
             <EntryCard
               entry={item}
@@ -153,8 +195,8 @@ export default function SearchScreen() {
                   },
                 })
               }
-              onDelete={deleteEntry}
-              onToggleFavorite={toggleFavorite}
+              onDelete={handleDelete}
+              onToggleFavorite={handleToggleFavorite}
             />
           )}
         />

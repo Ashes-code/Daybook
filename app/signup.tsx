@@ -4,7 +4,7 @@ import { Colors, Spacing, Typography } from "../constants/theme";
 import { useThemeStore } from "../stores/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../lib/supabase";
-import { useState, useRef, forwardRef, useMemo } from "react";
+import { useState, useRef, forwardRef } from "react";
 
 
 interface InputWithToggleProps extends TextInputProps {
@@ -74,7 +74,7 @@ export default function SignUpScreen() {
   const effectiveTheme = themeName === "brownPaper" ? (colorScheme === "dark" ? "dark" : "brownPaper") : themeName;
   const theme = Colors[effectiveTheme as "brownPaper" | "dark" | "light"];
 
-  const styles = useMemo(() => StyleSheet.create({
+  const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
@@ -168,41 +168,7 @@ export default function SignUpScreen() {
       fontWeight: "600",
       fontSize: 18,
     },
-    divider: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginVertical: Spacing.md,
-      gap: Spacing.sm,
-    },
-    dividerLine: {
-      flex: 1,
-      height: 1,
-      backgroundColor: theme.border,
-    },
-    dividerText: {
-      ...Typography.label,
-      color: theme.textSecondary,
-    },
-    googleButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: Spacing.md,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: theme.border,
-      marginTop: Spacing.sm,
-      gap: Spacing.sm,
-    },
-    googleIcon: {
-      marginRight: Spacing.xs,
-    },
-    googleButtonText: {
-      ...Typography.body,
-      fontWeight: "500",
-      fontSize: 16,
-    },
-  }), [theme]);
+  });
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
