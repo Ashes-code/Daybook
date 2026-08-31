@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { View, Text, TextInput, FlatList, Pressable, StyleSheet, RefreshControl } from "react-native";
+import { View, Text, TextInput, FlatList, Pressable, StyleSheet, RefreshControl, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
@@ -18,7 +18,7 @@ export default function SearchScreen() {
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
-  const { entries, deleteEntry, toggleFavorite, setEntries } = useEntriesStore();
+  const { entries, loading, deleteEntry, toggleFavorite, setEntries } = useEntriesStore();
   const { user } = useAuthStore();
   const [query, setQuery] = useState("");
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
@@ -153,7 +153,11 @@ export default function SearchScreen() {
         })}
       </View>
 
-      {query.length === 0 && selectedMood === null ? (
+      {loading ? (
+        <View style={styles.empty}>
+          <ActivityIndicator size="large" color={theme.accent} />
+        </View>
+      ) : query.length === 0 && selectedMood === null ? (
         <View style={styles.empty}>
           <Ionicons name="search" size={48} color={theme.textSecondary} />
           <Text style={[Typography.body, { color: theme.textSecondary }]}>

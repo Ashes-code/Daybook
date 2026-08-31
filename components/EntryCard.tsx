@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Modal,
   StyleSheet,
   Alert,
+  Animated,
 } from "react-native";
 import { Entry } from "../types/entry";
 import { Colors, Spacing, Typography } from "../constants/theme";
@@ -29,6 +30,27 @@ export function EntryCard({
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
   const [menuVisible, setMenuVisible] = useState(false);
+  const [fadeAnim] = useState(() => new Animated.Value(0));
+  const [heartScale] = useState(() => new Animated.Value(entry.favorited ? 1 : 0));
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    Animated.spring(heartScale, {
+      toValue: entry.favorited ? 1 : 0,
+      friction: 4,
+      tension: 120,
+      useNativeDriver: true,
+    }).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entry.favorited]);
 
   const handleLongPress = () => {
     setMenuVisible(true);
@@ -52,7 +74,7 @@ export function EntryCard({
   };
 
   return (
-    <>
+    <Animated.View style={{ opacity: fadeAnim }}>
       <Pressable
         onPress={() => onPress(entry)}
         onLongPress={handleLongPress}
@@ -63,17 +85,25 @@ export function EntryCard({
         ]}
       >
         <View style={styles.cardHeader}>
-          {entry.title && (
+          {entry.title ? (
             <Text
               style={[styles.title, { color: theme.text }]}
               numberOfLines={1}
             >
               {entry.title}
             </Text>
+          ) : (
+            <Text
+              style={[styles.title, { color: theme.text }]}
+              numberOfLines={1}
+            >
+              {entry.body.slice(0, 40)}
+              {entry.body.length > 40 ? "..." : ""}
+            </Text>
           )}
-          {entry.favorited && (
+          <Animated.View style={{ transform: [{ scale: heartScale }] }}>
             <Ionicons name="heart" size={16} color="#E74C3C" />
-          )}
+          </Animated.View>
         </View>
 
         <Text
@@ -171,7 +201,7 @@ export function EntryCard({
           </View>
         </Pressable>
       </Modal>
-    </>
+    </Animated.View>
   );
 }
 

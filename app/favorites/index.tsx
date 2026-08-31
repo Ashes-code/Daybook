@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Pressable, RefreshControl } from "react-native";
+import { View, Text, FlatList, StyleSheet, Pressable, RefreshControl, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
@@ -16,7 +16,7 @@ export default function FavoritesScreen() {
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
-  const { entries, toggleFavorite, deleteEntry, setEntries } = useEntriesStore();
+  const { entries, loading, toggleFavorite, deleteEntry, setEntries } = useEntriesStore();
   const { user } = useAuthStore();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -63,7 +63,11 @@ export default function FavoritesScreen() {
         <View style={styles.backButton} />
       </View>
 
-      {favorites.length === 0 ? (
+      {loading ? (
+        <View style={styles.empty}>
+          <ActivityIndicator size="large" color={theme.accent} />
+        </View>
+      ) : favorites.length === 0 ? (
         <View style={styles.empty}>
           <Ionicons name="heart-outline" size={48} color={theme.textSecondary} />
           <Text style={[Typography.body, { color: theme.textSecondary }]}>

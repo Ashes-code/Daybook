@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { View, Text, FlatList, Pressable, StyleSheet, RefreshControl } from "react-native";
+import { View, Text, FlatList, Pressable, StyleSheet, RefreshControl, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
@@ -16,7 +16,7 @@ export default function TodayScreen() {
   const insets = useSafeAreaInsets();
   const { themeName } = useThemeStore();
   const theme = Colors[themeName];
-  const { entries, deleteEntry, toggleFavorite, setEntries } = useEntriesStore();
+  const { entries, loading, deleteEntry, toggleFavorite, setEntries } = useEntriesStore();
   const { user } = useAuthStore();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -80,7 +80,11 @@ export default function TodayScreen() {
         </Pressable>
       </View>
 
-      {todayEntries.length === 0 ? (
+      {loading ? (
+        <View style={styles.empty}>
+          <ActivityIndicator size="large" color={theme.accent} />
+        </View>
+      ) : todayEntries.length === 0 ? (
         <View style={styles.empty}>
           <View style={[styles.emptyIcon, { backgroundColor: theme.accent + "15" }]}>
             <Ionicons name="book-outline" size={48} color={theme.accent} />

@@ -203,14 +203,14 @@ https://docs.expo.dev/versions/v57.0.0/
 
 ---
 
-### Milestone 4 — Polish diary feel
+### Milestone 4 — Polish diary feel ✅
 
-- [ ] Mood picker UX
-- [ ] Better calendar interactions
-- [ ] Soft animations (Reanimated where useful)
-- [ ] Haptics on save / delete
-- [ ] Dark mode parity
-- [ ] Keyboard-friendly writing screen
+- [x] Mood picker UX (haptic feedback on selection)
+- [x] Better calendar interactions
+- [x] Soft animations (fade-in cards, heart bounce on favorite)
+- [x] Haptics on save / delete
+- [x] Dark mode parity
+- [x] Keyboard-friendly writing screen (auto-focus, word count)
 
 **Learning focus:** UX details, accessibility basics, platform polish.
 

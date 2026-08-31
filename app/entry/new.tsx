@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import { Mood } from "../../types/entry";
 import { Ionicons } from "@expo/vector-icons";
 import { createEntry, updateEntry as updateEntryService } from "../../services/entries";
 import NetInfo from "@react-native-community/netinfo";
+import * as Haptics from "expo-haptics";
 
 export default function EntryFormScreen() {
   const router = useRouter();
@@ -42,6 +43,16 @@ export default function EntryFormScreen() {
   const [body, setBody] = useState(params.body ?? "");
   const [mood, setMood] = useState<Mood | null>((params.mood as Mood) ?? null);
   const [saving, setSaving] = useState(false);
+  const bodyRef = useRef<TextInput>(null);
+
+  const wordCount = body.trim() ? body.trim().split(/\s+/).filter(Boolean).length : 0;
+
+  useEffect(() => {
+    if (!isEditing) {
+      const timer = setTimeout(() => bodyRef.current?.focus(), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isEditing]);
 
   const handleSave = async () => {
     if (!body.trim()) {
@@ -94,6 +105,7 @@ export default function EntryFormScreen() {
     }
 
     setSaving(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.back();
   };
 
@@ -130,6 +142,7 @@ export default function EntryFormScreen() {
         />
 
         <TextInput
+          ref={bodyRef}
           style={[styles.bodyInput, { color: theme.text }]}
           placeholder="What's on your mind?"
           placeholderTextColor={theme.textSecondary}
@@ -138,6 +151,10 @@ export default function EntryFormScreen() {
           multiline
           textAlignVertical="top"
         />
+
+        <Text style={[Typography.bodySmall, { color: theme.textSecondary, textAlign: "right" }]}>
+          {wordCount} {wordCount === 1 ? "word" : "words"}
+        </Text>
 
         <Text style={[Typography.label, { color: theme.textSecondary, marginTop: Spacing.lg }]}>
           HOW ARE YOU FEELING?
@@ -150,7 +167,10 @@ export default function EntryFormScreen() {
             return (
               <Pressable
                 key={m.value}
-                onPress={() => setMood(isSelected ? null : m.value)}
+                onPress={() => {
+                  setMood(isSelected ? null : m.value);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
                 style={({ pressed }) => [
                   styles.moodOption,
                   {
