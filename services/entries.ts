@@ -57,10 +57,10 @@ export async function createEntry(entry: Entry, userId: string): Promise<{ error
   if (error) {
     console.log("[Daybook] createEntry FAILED:", error.message, error.code, error.details);
     await queueOperation("create", entry);
-  } else {
-    console.log("[Daybook] createEntry OK:", data?.length, "row(s)");
+    return { error: error.message };
   }
-  return { error: undefined };
+  console.log("[Daybook] createEntry OK:", data?.length, "row(s)");
+  return {};
 }
 
 export async function updateEntry(entry: Entry, userId: string): Promise<{ error?: string }> {
@@ -77,10 +77,11 @@ export async function updateEntry(entry: Entry, userId: string): Promise<{ error
     .eq("user_id", userId);
 
   if (error) {
+    console.log("[Daybook] updateEntry FAILED:", error.message, error.code);
     await queueOperation("update", entry);
-    return { error: undefined };
+    return { error: error.message };
   }
-  return { error: undefined };
+  return {};
 }
 
 export async function deleteEntryRemote(entryId: string, userId: string): Promise<{ error?: string }> {
@@ -91,6 +92,7 @@ export async function deleteEntryRemote(entryId: string, userId: string): Promis
     .eq("user_id", userId);
 
   if (error) {
+    console.log("[Daybook] deleteEntryRemote FAILED:", error.message, error.code);
     const entry: Entry = {
       id: entryId,
       userId,
@@ -103,9 +105,9 @@ export async function deleteEntryRemote(entryId: string, userId: string): Promis
       updatedAt: new Date().toISOString(),
     };
     await queueOperation("delete", entry);
-    return { error: undefined };
+    return { error: error.message };
   }
-  return { error: undefined };
+  return {};
 }
 
 export async function fetchRemoteEntries(userId: string): Promise<Entry[]> {

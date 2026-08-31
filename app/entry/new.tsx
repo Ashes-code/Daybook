@@ -81,7 +81,10 @@ export default function EntryFormScreen() {
 
       const net = await NetInfo.fetch();
       if (net.isConnected && user) {
-        await updateEntryService(updated, user.id);
+        const { error } = await updateEntryService(updated, user.id);
+        if (error) {
+          Alert.alert("Sync failed", "Entry saved locally. It will sync when connection is restored.");
+        }
       }
     } else {
       const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -100,7 +103,10 @@ export default function EntryFormScreen() {
 
       const net = await NetInfo.fetch();
       if (net.isConnected && user) {
-        await createEntry(entry, user.id);
+        const { error } = await createEntry(entry, user.id);
+        if (error) {
+          Alert.alert("Sync failed", "Entry saved locally. It will sync when connection is restored.");
+        }
       }
     }
 

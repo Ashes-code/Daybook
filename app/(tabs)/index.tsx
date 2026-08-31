@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { View, Text, FlatList, Pressable, StyleSheet, RefreshControl, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, Pressable, StyleSheet, RefreshControl, ActivityIndicator, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
@@ -48,7 +48,10 @@ export default function TodayScreen() {
     deleteEntry(entry.id);
     const net = await NetInfo.fetch();
     if (net.isConnected && user) {
-      await deleteEntryRemote(entry.id, user.id);
+      const { error } = await deleteEntryRemote(entry.id, user.id);
+      if (error) {
+        Alert.alert("Sync failed", "Deletion saved locally. It will sync when connection is restored.");
+      }
     }
   };
 

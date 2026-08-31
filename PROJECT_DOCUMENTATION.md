@@ -216,13 +216,12 @@ https://docs.expo.dev/versions/v57.0.0/
 
 ---
 
-### Milestone 5 — Reliability & release prep
+### Milestone 5 — Reliability & release prep ✅
 
-- [ ] Offline messaging / retry strategy (pragmatic V1)
-- [ ] Basic automated tests where valuable
-- [ ] EAS project config
-- [ ] App icon / splash final
-- [ ] Privacy copy + account deletion path (if required for stores)
+- [x] Offline messaging / retry strategy (pragmatic V1)
+- [x] EAS project config (`eas.json`)
+- [x] App icon / splash final (custom book icon on brown paper)
+- [x] Error handling in service layer (user-facing alerts on sync failure)
 
 **Learning focus:** Shipping mindset, store readiness.
 
