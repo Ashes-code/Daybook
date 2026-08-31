@@ -1,8 +1,0 @@
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle -->
-  <circle cx="512" cy="512" r="512" fill="#F5F0E8"/>
-  <!-- Book icon - simplified version of Ionicons book icon -->
-  <g transform="translate(180, 180) scale(4.5)">
-    <path fill="#8C7A6B" d="M128 24C57.3 24 0 81.3 0 152v504c0 70.7 57.3 128 128 128h568c70.7 0 128-57.3 128-128V152c0-70.7-57.3-128-128-128H128zm0 48h568c38.7 0 70.4 31.6 70.4 70.4v504c0 38.7-31.7 70.4-70.4 70.4H128c-38.7 0-70.4-31.7-70.4-70.4V152c0-38.8 31.7-70.4 70.4-70.4zm0 576V222.4H198.4v457.6H128zm80-544h32v32h-32V32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm128-256h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm128-256h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm128-256h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32zm0 64h32v32h-32v-32z"/>
-  </g>
-</svg>
