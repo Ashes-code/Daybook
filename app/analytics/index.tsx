@@ -55,31 +55,43 @@ export default function AnalyticsScreen() {
         <View style={styles.backButton} />
       </View>
 
-      <View style={styles.statsGrid}>
-        <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Ionicons name="book-outline" size={24} color={theme.accent} />
-          <Text style={[styles.statValue, { color: theme.text }]}>{totalEntries}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Total Entries</Text>
+      {entries.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Ionicons name="bar-chart-outline" size={48} color={theme.textSecondary} />
+          <Text style={[Typography.body, { color: theme.textSecondary }]}>
+            No data yet
+          </Text>
+          <Text style={[Typography.bodySmall, { color: theme.textSecondary, textAlign: "center" }]}>
+            Start writing entries to see your analytics here
+          </Text>
         </View>
+      ) : (
+        <>
+          <View style={styles.statsGrid}>
+            <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+              <Ionicons name="book-outline" size={24} color={theme.accent} />
+              <Text style={[styles.statValue, { color: theme.text }]}>{totalEntries}</Text>
+              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Total Entries</Text>
+            </View>
 
-        <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Ionicons name="calendar-outline" size={24} color={theme.accent} />
-          <Text style={[styles.statValue, { color: theme.text }]}>{uniqueDays}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Days Written</Text>
-        </View>
+            <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+              <Ionicons name="calendar-outline" size={24} color={theme.accent} />
+              <Text style={[styles.statValue, { color: theme.text }]}>{uniqueDays}</Text>
+              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Days Written</Text>
+            </View>
 
-        <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Ionicons name="flame-outline" size={24} color={theme.accent} />
-          <Text style={[styles.statValue, { color: theme.text }]}>{longestStreak}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Day Streak</Text>
-        </View>
+            <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+              <Ionicons name="flame-outline" size={24} color={theme.accent} />
+              <Text style={[styles.statValue, { color: theme.text }]}>{longestStreak}</Text>
+              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Day Streak</Text>
+            </View>
 
-        <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Ionicons name="trending-up-outline" size={24} color={theme.accent} />
-          <Text style={[styles.statValue, { color: theme.text }]}>{avgEntriesPerDay}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Avg / Day</Text>
-        </View>
-      </View>
+            <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+              <Ionicons name="trending-up-outline" size={24} color={theme.accent} />
+              <Text style={[styles.statValue, { color: theme.text }]}>{avgEntriesPerDay}</Text>
+              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Avg / Day</Text>
+            </View>
+          </View>
 
       <View style={[styles.section, { backgroundColor: theme.surface, borderColor: theme.border }]}>
         <Text style={[Typography.label, { color: theme.textSecondary }]}>
@@ -134,6 +146,8 @@ export default function AnalyticsScreen() {
           </Text>
         </View>
       </View>
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -156,6 +170,13 @@ const styles = StyleSheet.create({
   backButton: {
     padding: Spacing.sm,
     minWidth: 40,
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.md,
+    paddingHorizontal: Spacing.xl,
   },
   statsGrid: {
     flexDirection: "row",

@@ -5,12 +5,16 @@ import { useEffect } from "react";
 import { useThemeStore } from "../stores/theme";
 import { Colors } from "../constants/theme";
 import { useAuthStore, initializeAuth } from "../stores/auth";
+import { ToastContainer } from "../components/Toast";
+import { useNetworkSync } from "../hooks/useNetworkSync";
 
 export default function RootLayout() {
   const { themeName, initializeTheme } = useThemeStore();
   const theme = Colors[themeName];
   const isDark = themeName === "dark";
   const { user, loading, initialized, setMounted } = useAuthStore();
+
+  useNetworkSync();
 
   useEffect(() => {
     let subscription: { unsubscribe: () => void } | null = null;
@@ -47,23 +51,21 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             contentStyle: { backgroundColor: theme.background },
+            headerShown: false,
+            headerMode: "none",
           }}
         >
-          <Stack.Screen name="welcome" options={{ headerShown: false }} />
+          <Stack.Screen name="welcome" />
           <Stack.Screen
             name="signup"
             options={{
-              title: "Sign Up",
               presentation: "modal",
-              headerShown: false,
             }}
           />
           <Stack.Screen
             name="signin"
             options={{
-              title: "Sign In",
               presentation: "modal",
-              headerShown: false,
             }}
           />
         </Stack>
@@ -77,58 +79,49 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           contentStyle: { backgroundColor: theme.background },
+          headerShown: false,
+          headerMode: "none",
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" />
         <Stack.Screen
           name="entry/new"
           options={{
-            title: "New Entry",
             presentation: "modal",
-            headerShown: false,
           }}
         />
         <Stack.Screen
           name="day/[date]"
           options={{
-            title: "Day Entries",
             presentation: "modal",
-            headerShown: false,
           }}
         />
         <Stack.Screen
           name="analytics/index"
           options={{
-            title: "Analytics",
             presentation: "modal",
-            headerShown: false,
           }}
         />
         <Stack.Screen
           name="favorites/index"
           options={{
-            title: "Favorites",
             presentation: "modal",
-            headerShown: false,
           }}
         />
         <Stack.Screen
           name="appearance/index"
           options={{
-            title: "Appearance",
             presentation: "modal",
-            headerShown: false,
           }}
         />
         <Stack.Screen
           name="about/index"
           options={{
-            title: "About",
             presentation: "modal",
-            headerShown: false,
           }}
         />
       </Stack>
+      <ToastContainer />
     </>
   );
 }
