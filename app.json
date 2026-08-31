@@ -49,8 +49,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": ""
-      }
-    }
+        "projectId": "41bba409-1020-4e69-b465-f958e527f37b"
+      },
+      "router": {}
+    },
+    "owner": "ashes-code"
   }
 }
