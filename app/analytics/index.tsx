@@ -151,25 +151,25 @@ export default function AnalyticsScreen() {
         <>
           <View style={styles.statsGrid}>
             <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-              <Ionicons name="book-outline" size={24} color={theme.accent} />
+              <Ionicons name="book-outline" size={24} color={theme.text} />
               <Text style={[styles.statValue, { color: theme.text }]}>{totalEntries}</Text>
               <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Total Entries</Text>
             </View>
 
             <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-              <Ionicons name="calendar-outline" size={24} color={theme.accent} />
+              <Ionicons name="calendar-outline" size={24} color={theme.text} />
               <Text style={[styles.statValue, { color: theme.text }]}>{uniqueDays}</Text>
               <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Days Written</Text>
             </View>
 
             <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-              <Ionicons name="flame-outline" size={24} color={theme.accent} />
+              <Ionicons name="flame-outline" size={24} color={theme.text} />
               <Text style={[styles.statValue, { color: theme.text }]}>{currentStreak}</Text>
               <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Current Streak</Text>
             </View>
 
             <View style={[styles.statCard, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-              <Ionicons name="trophy-outline" size={24} color={theme.accent} />
+              <Ionicons name="trophy-outline" size={24} color={theme.text} />
               <Text style={[styles.statValue, { color: theme.text }]}>{bestStreak}</Text>
               <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Best Streak</Text>
             </View>

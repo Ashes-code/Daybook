@@ -67,7 +67,10 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
 
   loadEntries: async () => {
     try {
-      const stored = await AsyncStorage.getItem(ENTRIES_STORAGE_KEY);
+      const stored = await Promise.race([
+        AsyncStorage.getItem(ENTRIES_STORAGE_KEY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
       if (stored) {
         const parsed = JSON.parse(stored);
         set({ entries: parsed, loading: false });

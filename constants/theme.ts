@@ -14,6 +14,7 @@ export type ThemeColors = {
   tabActive: string;
   spinner: string;
   surfaceSecondary?: string; 
+  accentSecondary?: string;
 };
 
 export const Colors: Record<ThemeName, ThemeColors> = {
@@ -37,7 +38,8 @@ export const Colors: Record<ThemeName, ThemeColors> = {
     text: "#FFFFFF",
     textSecondary: "#A0A0A0",
     border: "#2A2A2A",
-    accent: "#0c0c0c",
+    accent: "#FFFFFF",
+    accentSecondary: "#ede8e8",
     accentLight: "#333333",
     error: "#FF4444",
     separator: "#1A1A1A",

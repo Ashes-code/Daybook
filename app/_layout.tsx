@@ -30,7 +30,16 @@ export default function RootLayout() {
     
     init();
     
+    const fallback = setTimeout(() => {
+      const { initialized } = useAuthStore.getState();
+      if (!initialized) {
+        useAuthStore.getState().setLoading(false);
+        useAuthStore.getState().setInitialized(true);
+      }
+    }, 5000);
+    
     return () => {
+      clearTimeout(fallback);
       subscription?.unsubscribe();
     };
   }, [initializeTheme]);
@@ -57,7 +66,7 @@ export default function RootLayout() {
     return (
       <>
         <StatusBar style={isDark ? "light" : "dark"} />
-        <View style={[styles.loadingContainer, { backgroundColor: isDark ? "#FFFFFF" : theme.background }]}>
+        <View style={[styles.loadingContainer, { backgroundColor: theme.background }]}>
           <ActivityIndicator size="large" color={theme.spinner} />
         </View>
       </>

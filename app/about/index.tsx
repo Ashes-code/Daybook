@@ -27,7 +27,7 @@ export default function AboutScreen() {
         contentContainerStyle={styles.content}
       >
         <View style={styles.iconContainer}>
-          <View style={[styles.iconCircle, { backgroundColor: theme.accent + "20" }]}>
+          <View style={[styles.iconCircle, { backgroundColor: theme.surface, borderColor: theme.border }]}>
             <Ionicons name="book" size={48} color={theme.accent} />
           </View>
         </View>
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 48,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
   },
   appName: {
     ...Typography.heading,

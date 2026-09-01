@@ -30,13 +30,17 @@ export const useAuthStore = create<AuthState>((set) => ({
 }));
 
 export async function initializeAuth() {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (session) {
-    useAuthStore.getState().setSession(session);
-    useAuthStore.getState().setUser(session.user);
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (session) {
+      useAuthStore.getState().setSession(session);
+      useAuthStore.getState().setUser(session.user);
+    }
+  } catch {
+    // Proceed as unauthenticated
   }
-  
+
   useAuthStore.getState().setLoading(false);
   useAuthStore.getState().setInitialized(true);
 

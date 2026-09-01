@@ -92,7 +92,7 @@ export default function CalendarScreen() {
                 onPress={() => router.push({ pathname: "/day/[date]", params: { date: dateStr } })}
                 style={({ pressed }) => [
                   styles.dayButton,
-                  isToday && { backgroundColor: theme.accent + "20" },
+                  isToday && { backgroundColor: theme.accentLight },
                   pressed && { opacity: 0.7 },
                 ]}
               >
@@ -100,7 +100,7 @@ export default function CalendarScreen() {
                   style={[
                     styles.dayText,
                     {
-                      color: isToday ? theme.accent : theme.text,
+                      color: theme.text,
                       fontWeight: isToday ? "600" : "400",
                     },
                   ]}
