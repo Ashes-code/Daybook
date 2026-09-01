@@ -38,8 +38,8 @@ export default function ProfileScreen() {
       </View>
 
       <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-        <View style={[styles.avatar, { backgroundColor: theme.accent + "20" }]}>
-          <Ionicons name="person" size={48} color={theme.accent} />
+        <View style={[styles.avatar, { backgroundColor: theme.accent + "20", borderColor: theme.textSecondary }]}>
+          <Ionicons name="person" size={48} color={theme.text} />
         </View>
 
         {user ? (
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
   },
   button: {
     paddingHorizontal: Spacing.xl,

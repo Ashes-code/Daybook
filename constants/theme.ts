@@ -12,6 +12,8 @@ export type ThemeColors = {
   error: string;
   separator: string;
   tabActive: string;
+  spinner: string;
+  surfaceSecondary?: string; 
 };
 
 export const Colors: Record<ThemeName, ThemeColors> = {
@@ -26,18 +28,21 @@ export const Colors: Record<ThemeName, ThemeColors> = {
     error: "#C0392B",
     separator: "#F0EBE4",
     tabActive: "#A0522D",
+    spinner: "#8C7A6B",
   },
   dark: {
     background: "#000000",
     surface: "#1A1A1A",
+    surfaceSecondary: "#f2eded",
     text: "#FFFFFF",
     textSecondary: "#A0A0A0",
     border: "#2A2A2A",
-    accent: "#FFFFFF",
+    accent: "#0c0c0c",
     accentLight: "#333333",
     error: "#FF4444",
     separator: "#1A1A1A",
     tabActive: "#FFFFFF",
+    spinner: "#ffffff",
   },
   light: {
     background: "#F8F9FA",
@@ -50,6 +55,7 @@ export const Colors: Record<ThemeName, ThemeColors> = {
     error: "#DC3545",
     separator: "#F1F3F5",
     tabActive: "#4A90D9",
+    spinner: "#4A90D9",
   },
 };
 

@@ -17,7 +17,7 @@ import { useAuthStore } from "../../stores/auth";
 import { MOODS, MOOD_COLORS } from "../../constants/moods";
 import { Mood } from "../../types/entry";
 import { Ionicons } from "@expo/vector-icons";
-import { createEntry, updateEntry as updateEntryService } from "../../services/entries";
+import { createEntry, updateEntry as updateEntryService, queueOperation } from "../../services/entries";
 import NetInfo from "@react-native-community/netinfo";
 import * as Haptics from "expo-haptics";
 
@@ -85,6 +85,8 @@ export default function EntryFormScreen() {
         if (error) {
           Alert.alert("Sync failed", "Entry saved locally. It will sync when connection is restored.");
         }
+      } else {
+        await queueOperation("update", updated);
       }
     } else {
       const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -107,6 +109,8 @@ export default function EntryFormScreen() {
         if (error) {
           Alert.alert("Sync failed", "Entry saved locally. It will sync when connection is restored.");
         }
+      } else {
+        await queueOperation("create", entry);
       }
     }
 

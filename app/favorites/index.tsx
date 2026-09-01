@@ -65,7 +65,7 @@ export default function FavoritesScreen() {
 
       {loading ? (
         <View style={styles.empty}>
-          <ActivityIndicator size="large" color={theme.accent} />
+          <ActivityIndicator size="large" color={theme.spinner} />
         </View>
       ) : favorites.length === 0 ? (
         <View style={styles.empty}>

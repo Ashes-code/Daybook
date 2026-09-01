@@ -196,7 +196,7 @@ export async function syncPendingOps(userId: string): Promise<void> {
   await writePendingOps(remainingOps);
 }
 
-async function queueOperation(type: "create" | "update" | "delete", entry: Entry): Promise<void> {
+export async function queueOperation(type: "create" | "update" | "delete", entry: Entry): Promise<void> {
   const ops = await readPendingOps();
   ops.push({
     id: `${type}-${entry.id}-${Date.now()}`,

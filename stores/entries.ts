@@ -12,6 +12,7 @@ interface EntriesState {
   deleteEntry: (id: string) => void;
   toggleFavorite: (id: string) => void;
   setEntries: (entries: Entry[]) => void;
+  mergeRemoteEntries: (remote: Entry[]) => void;
   loadEntries: () => Promise<void>;
 }
 
@@ -53,6 +54,16 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
     set({ entries });
     AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(entries)).catch(() => {});
   },
+
+  mergeRemoteEntries: (remote) =>
+    set((state) => {
+      const remoteIds = new Set(remote.map((e) => e.id));
+      const localOnly = state.entries.filter((e) => !remoteIds.has(e.id));
+      const merged = [...localOnly, ...remote];
+      merged.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      AsyncStorage.setItem(ENTRIES_STORAGE_KEY, JSON.stringify(merged)).catch(() => {});
+      return { entries: merged };
+    }),
 
   loadEntries: async () => {
     try {

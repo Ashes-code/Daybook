@@ -9,7 +9,7 @@ let wasOnline = true;
 
 export function useNetworkSync() {
   const { user } = useAuthStore();
-  const { entries, setEntries } = useEntriesStore();
+  const { mergeRemoteEntries } = useEntriesStore();
 
   useEffect(() => {
     if (!user) return;
@@ -28,7 +28,7 @@ export function useNetworkSync() {
 
         const remote = await fetchRemoteEntries(user.id);
         if (remote.length > 0) {
-          setEntries(remote);
+          mergeRemoteEntries(remote);
         }
 
         showSyncSuccessToast();

@@ -15,8 +15,8 @@ export default function RootLayout() {
   const { themeName, initializeTheme } = useThemeStore();
   const theme = Colors[themeName];
   const isDark = themeName === "dark";
-  const { user, loading, initialized, setMounted } = useAuthStore();
-  const { loadEntries, setEntries } = useEntriesStore();
+  const { user, loading, initialized } = useAuthStore();
+  const { loadEntries, mergeRemoteEntries } = useEntriesStore();
 
   useNetworkSync();
 
@@ -24,7 +24,6 @@ export default function RootLayout() {
     let subscription: { unsubscribe: () => void } | null = null;
     
     const init = async () => {
-      setMounted(true);
       await initializeTheme();
       subscription = await initializeAuth();
     };
@@ -32,10 +31,9 @@ export default function RootLayout() {
     init();
     
     return () => {
-      setMounted(false);
       subscription?.unsubscribe();
     };
-  }, [initializeTheme, setMounted]);
+  }, [initializeTheme]);
 
   useEffect(() => {
     if (!user) return;
@@ -47,20 +45,20 @@ export default function RootLayout() {
         await syncPendingOps(user.id);
         const remote = await fetchRemoteEntries(user.id);
         if (remote.length > 0) {
-          setEntries(remote);
+          mergeRemoteEntries(remote);
         }
       }
     };
 
     loadAndSync();
-  }, [user, loadEntries, setEntries]);
+  }, [user, loadEntries, mergeRemoteEntries]);
 
   if (!initialized || loading) {
     return (
       <>
         <StatusBar style={isDark ? "light" : "dark"} />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.accent} />
+        <View style={[styles.loadingContainer, { backgroundColor: isDark ? "#FFFFFF" : theme.background }]}>
+          <ActivityIndicator size="large" color={theme.spinner} />
         </View>
       </>
     );
@@ -74,7 +72,6 @@ export default function RootLayout() {
           screenOptions={{
             contentStyle: { backgroundColor: theme.background },
             headerShown: false,
-            headerMode: "none",
           }}
         >
           <Stack.Screen name="welcome" />
@@ -102,7 +99,6 @@ export default function RootLayout() {
         screenOptions={{
           contentStyle: { backgroundColor: theme.background },
           headerShown: false,
-          headerMode: "none",
         }}
       >
         <Stack.Screen name="(tabs)" />

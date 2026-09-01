@@ -75,7 +75,7 @@ export default function TodayScreen() {
           onPress={() => router.push("/entry/new")}
           style={({ pressed }) => [
             styles.addButton,
-            { backgroundColor: theme.accent },
+            { backgroundColor: theme.surfaceSecondary ?? theme.accent },
             pressed && { opacity: 0.7 },
           ]}
         >
@@ -85,7 +85,7 @@ export default function TodayScreen() {
 
       {loading ? (
         <View style={styles.empty}>
-          <ActivityIndicator size="large" color={theme.accent} />
+          <ActivityIndicator size="large" color={theme.spinner} />
         </View>
       ) : todayEntries.length === 0 ? (
         <View style={styles.empty}>

@@ -155,7 +155,7 @@ export default function SearchScreen() {
 
       {loading ? (
         <View style={styles.empty}>
-          <ActivityIndicator size="large" color={theme.accent} />
+          <ActivityIndicator size="large" color={theme.spinner} />
         </View>
       ) : query.length === 0 && selectedMood === null ? (
         <View style={styles.empty}>

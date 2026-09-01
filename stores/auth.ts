@@ -11,7 +11,6 @@ interface AuthState {
   setSession: (session: any) => void;
   setLoading: (loading: boolean) => void;
   setInitialized: (initialized: boolean) => void;
-  setMounted: (mounted: boolean) => void;
   signOut: () => Promise<void>;
 }
 
@@ -24,7 +23,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   setSession: (session) => set({ session }),
   setLoading: (loading) => set({ loading }),
   setInitialized: (initialized) => set({ initialized }),
-  setMounted: (mounted) => set({ mounted }),
   signOut: async () => {
     await supabase.auth.signOut();
     set({ user: null, session: null });
@@ -34,16 +32,6 @@ export const useAuthStore = create<AuthState>((set) => ({
 export async function initializeAuth() {
   const { data: { session } } = await supabase.auth.getSession();
   
-  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-    const { mounted } = useAuthStore.getState();
-    if (!mounted) return;
-    
-    useAuthStore.getState().setSession(session);
-    useAuthStore.getState().setUser(session?.user ?? null);
-    useAuthStore.getState().setLoading(false);
-    useAuthStore.getState().setInitialized(true);
-  });
-
   if (session) {
     useAuthStore.getState().setSession(session);
     useAuthStore.getState().setUser(session.user);
@@ -51,6 +39,11 @@ export async function initializeAuth() {
   
   useAuthStore.getState().setLoading(false);
   useAuthStore.getState().setInitialized(true);
+
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+    useAuthStore.getState().setSession(session);
+    useAuthStore.getState().setUser(session?.user ?? null);
+  });
 
   return data.subscription;
 }
