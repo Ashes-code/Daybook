@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, Animated, useState, useEffect } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Spacing, Typography } from "../constants/theme";
 import { useToastStore } from "../stores/toast";

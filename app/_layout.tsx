@@ -2,6 +2,8 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect } from "react";
+import * as SystemUI from "expo-system-ui";
+import * as SplashScreen from "expo-splash-screen";
 import { useThemeStore } from "../stores/theme";
 import { Colors } from "../constants/theme";
 import { useAuthStore, initializeAuth } from "../stores/auth";
@@ -10,6 +12,8 @@ import { ToastContainer } from "../components/Toast";
 import { useNetworkSync } from "../hooks/useNetworkSync";
 import { fetchRemoteEntries, syncPendingOps } from "../services/entries";
 import NetInfo from "@react-native-community/netinfo";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { themeName, initializeTheme } = useThemeStore();
@@ -22,14 +26,14 @@ export default function RootLayout() {
 
   useEffect(() => {
     let subscription: { unsubscribe: () => void } | null = null;
-    
+
     const init = async () => {
       await initializeTheme();
       subscription = await initializeAuth();
     };
-    
+
     init();
-    
+
     const fallback = setTimeout(() => {
       const { initialized } = useAuthStore.getState();
       if (!initialized) {
@@ -37,7 +41,7 @@ export default function RootLayout() {
         useAuthStore.getState().setInitialized(true);
       }
     }, 5000);
-    
+
     return () => {
       clearTimeout(fallback);
       subscription?.unsubscribe();
@@ -45,17 +49,31 @@ export default function RootLayout() {
   }, [initializeTheme]);
 
   useEffect(() => {
+    SystemUI.setBackgroundColorAsync(theme.background);
+  }, [theme.background]);
+
+  useEffect(() => {
+    if (initialized) {
+      SplashScreen.hideAsync();
+    }
+  }, [initialized]);
+
+  useEffect(() => {
     if (!user) return;
 
     const loadAndSync = async () => {
-      await loadEntries();
-      const net = await NetInfo.fetch();
-      if (net.isConnected) {
-        await syncPendingOps(user.id);
-        const remote = await fetchRemoteEntries(user.id);
-        if (remote.length > 0) {
-          mergeRemoteEntries(remote);
+      try {
+        await loadEntries();
+        const net = await NetInfo.fetch();
+        if (net.isConnected) {
+          await syncPendingOps(user.id);
+          const remote = await fetchRemoteEntries(user.id);
+          if (remote.length > 0) {
+            mergeRemoteEntries(remote);
+          }
         }
+      } catch {
+        // Offline or network error — proceed with local data
       }
     };
 
@@ -80,6 +98,7 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             contentStyle: { backgroundColor: theme.background },
+            cardStyle: { backgroundColor: theme.background },
             headerShown: false,
           }}
         >
@@ -107,6 +126,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           contentStyle: { backgroundColor: theme.background },
+          cardStyle: { backgroundColor: theme.background },
           headerShown: false,
         }}
       >

@@ -31,7 +31,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 
 export async function initializeAuth() {
   try {
-    const { data: { session } } = await supabase.auth.getSession();
+    const sessionPromise = supabase.auth.getSession();
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Session fetch timeout")), 3000)
+    );
+
+    const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
 
     if (session) {
       useAuthStore.getState().setSession(session);
