@@ -21,17 +21,19 @@ export function useNetworkSync() {
         showOfflineToast();
         wasOnline = false;
       } else if (isOnline && !wasOnline) {
-        showOnlineToast();
         wasOnline = true;
+        showOnlineToast();
 
-        await syncPendingOps(user.id);
-
-        const remote = await fetchRemoteEntries(user.id);
-        if (remote.length > 0) {
-          mergeRemoteEntries(remote);
+        try {
+          await syncPendingOps(user.id);
+          const remote = await fetchRemoteEntries(user.id);
+          if (remote.length > 0) {
+            mergeRemoteEntries(remote);
+          }
+          showSyncSuccessToast();
+        } catch {
+          showOfflineToast();
         }
-
-        showSyncSuccessToast();
       }
     });
 

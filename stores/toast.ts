@@ -28,6 +28,6 @@ export const useToastStore = create<ToastState>((set) => ({
     set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) })),
 }));
 
-export const showOfflineToast = () => useToastStore.getState().showToast("You're offline. Changes will sync when online.", "offline", 0);
+export const showOfflineToast = () => useToastStore.getState().showToast("You're offline. Changes will sync when online.", "offline", 4000);
 export const showOnlineToast = () => useToastStore.getState().showToast("Back online. Syncing...", "online", 2000);
 export const showSyncSuccessToast = () => useToastStore.getState().showToast("Synced successfully", "success", 2000);

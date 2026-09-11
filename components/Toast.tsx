@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, Text, StyleSheet, Animated, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Spacing, Typography } from "../constants/theme";
 import { useToastStore } from "../stores/toast";
@@ -51,18 +51,20 @@ export function ToastItem({ toast, onDismiss }: ToastItemProps) {
   };
 
   return (
-    <Animated.View
-      style={[
-        styles.toast,
-        { backgroundColor: getBgColor() },
-        { opacity, transform: [{ translateY }] },
-      ]}
-    >
-      <View style={styles.toastContent}>
-        <Ionicons name={getIcon()} size={20} color="#FFFFFF" style={styles.icon} />
-        <Text style={[styles.toastText, { color: "#FFFFFF" }]}>{toast.message}</Text>
-      </View>
-    </Animated.View>
+    <Pressable onPress={() => onDismiss(toast.id)}>
+      <Animated.View
+        style={[
+          styles.toast,
+          { backgroundColor: getBgColor() },
+          { opacity, transform: [{ translateY }] },
+        ]}
+      >
+        <View style={styles.toastContent}>
+          <Ionicons name={getIcon()} size={20} color="#FFFFFF" style={styles.icon} />
+          <Text style={[styles.toastText, { color: "#FFFFFF" }]}>{toast.message}</Text>
+        </View>
+      </Animated.View>
+    </Pressable>
   );
 }
 
